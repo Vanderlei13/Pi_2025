@@ -1,5 +1,5 @@
 import "../style/header.css";
-import { FaSearch, FaShoppingCart } from "react-icons/fa";
+import { FaSearch, FaShoppingCart } from "react-icons/fa"; // serve pra usar os icones
 
 // funcao/constante do header
 const Header = () => {
