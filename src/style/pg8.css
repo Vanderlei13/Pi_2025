@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap'); /*Importa fonte do google */
+
+.anuncios-container {
+  background-color: #e8e5e5;
+  min-height: 100vh;
+  padding: 40px 20px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+.anuncios-container h1 {
+  font-size: 42px;
+  font-weight: normal;
+  margin-bottom: 40px;
+  color: #111;
+}
+
+.card-grid {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.card {
+  background-color: white;
+  width: 360px;
+  height: 300px;
+  border-radius: 12px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card p {
+  font-size: 27px;
+  margin-bottom: 20px;
+  color: #111;
+}
+
+.icon {
+  font-size: 42px;
+  color: #666;
+}

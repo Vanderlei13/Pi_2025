@@ -1,8 +1,10 @@
 import "../style/header.css";
 import { FaSearch, FaShoppingCart } from "react-icons/fa"; // serve pra usar os icones
+// import {useNavigate} from "react-router-dom"; // serve pra fazer links entre paginas
 
 // funcao/constante do header
 const Header = () => {
+  // const navigate = useNavigate(); // Serve para navegar entre as paginas 
   return (
     <header className="header">
       <div className="logo"><img src="/Imagens/Logo.png"/></div>
@@ -22,7 +24,7 @@ const Header = () => {
         <nav className="nav-links">
           <a href="#">Home</a>
           <a href="#">Locação</a>
-          <a href="#">Anúncios</a>
+          <a heref="#">Anúncios</a>
           <a href="#">Contato</a>
         </nav>
 
