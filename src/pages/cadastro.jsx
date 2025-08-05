@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../style/pg14.css";
+import "../style/Cadastro.css";
 import bombeiroImg from "../../public/Imagens/bombeiro.png"; // ajuste o caminho conforme sua estrutura
 
 export default function Cadastro() {

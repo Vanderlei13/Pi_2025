@@ -1,5 +1,5 @@
 import React from 'react';
-import '../style/pg7.css';
+import '../style/filtro_de_compras.css';
 
 const produtos = [
   { nome: 'Óculos', preco: 'R$ 350,00', imagemClass: 'oculos' },
@@ -10,7 +10,7 @@ const produtos = [
   { nome: 'Ford Ranger', preco: 'R$ 350,00', imagemClass: 'ranger' },
 ];
 
-function Pg7() {
+function Filtro_de_compras() {
   return (
     <div className="pagina">
       <aside className="filtros">
@@ -50,4 +50,4 @@ function Pg7() {
   );
 }
 
-export default Pg7;
+export default Filtro_de_compras;

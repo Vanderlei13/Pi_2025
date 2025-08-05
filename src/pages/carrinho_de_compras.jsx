@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../style/pg18.css';
+import '../style/carrinho_de_compras.css';
 
 const PRECO_ITENS = [1624, 1624, 1624];
 const PRODUTOS = [
@@ -20,7 +20,7 @@ const PRODUTOS = [
   }
 ];
 
-export default function Pg18() {
+export default function Carrinho_de_compras() {
   const [quantidades, setQuantidades] = useState([1, 1, 1]);
   const [ativos, setAtivos] = useState([true, true, true]);
 

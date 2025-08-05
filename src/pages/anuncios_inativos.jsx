@@ -1,6 +1,6 @@
-import '../style/pg10.css';
+import '../style/anuncios_inativos.css';
 
-export default function Pg10() {
+export default function Anuncios_inativos() {
   return (
     <div className="pg10-container">
       <h1 className="pg10-title">Seus Anúncios Inativos</h1>

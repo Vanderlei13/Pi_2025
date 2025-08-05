@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import '../style/pg19.css';
+import '../style/adicionar_informacoes.css';
 
-export default function Pg19() {
+export default function Adicionar_informacoes() {
   const [info, setInfo] = useState('');
   return (
     <div className="pg19-bg">

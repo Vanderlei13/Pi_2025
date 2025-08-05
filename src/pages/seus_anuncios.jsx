@@ -1,8 +1,8 @@
 import React from "react";
-import "../style/pg8.css";
+import "../style/seus_anuncios.css";
 import { FaSyncAlt, FaCheck, FaPlus } from "react-icons/fa"; //Importa icones do pacote react-icons, qualquer coisa instalar com npm install react-icons
 
-function Pg8() {
+function Seus_anuncios() {
   return (
     <div className="anuncios-container">
       <h1>Seus Anúncios</h1>
@@ -24,4 +24,4 @@ function Pg8() {
   );
 }
 
-export default Pg8;
+export default Seus_anuncios;

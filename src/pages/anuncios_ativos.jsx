@@ -1,7 +1,7 @@
 import React from "react";
-import "../style/pg9.css";
+import "../style/anuncios_ativos.css";
 
-export default function Pg9() {
+export default function Anuncios_ativos() {
   const anuncios = [
     { nome: "Cinto", preco: "R$ 350,00", classe: "img-cinto" },
     { nome: "Corda 150m x 12mm", preco: "R$ 350,00", classe: "img-corda" },
