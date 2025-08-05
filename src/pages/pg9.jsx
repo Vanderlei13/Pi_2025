@@ -1,7 +1,7 @@
 import React from "react";
 import "../style/pg9.css";
 
-export default function Pg16() {
+export default function Pg9() {
   const anuncios = [
     { nome: "Cinto", preco: "R$ 350,00", classe: "img-cinto" },
     { nome: "Corda 150m x 12mm", preco: "R$ 350,00", classe: "img-corda" },
@@ -22,7 +22,7 @@ export default function Pg16() {
             </div>
           </div>
         ))}
-      </div>
+      </div>    
     </div>
   );
 }
