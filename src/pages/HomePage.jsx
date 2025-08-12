@@ -1,15 +1,20 @@
 import Header from "../componentes/header.jsx";
 import Carrossel from "../componentes/Carousel.jsx";
-import Pg14 from "../pages/pg14.jsx";
+import Footer from "../componentes/footer.jsx";
 
 export default function HomePage() {
   return (
     <>
       <Header />
       <Carrossel />
-      <Pg14 />
       {/* Conteúdo da página inicial pode ser adicionado aqui futuramente */}
-      <main style={{ minHeight: "80vh", background: "#f2f2f2" }}></main>
+      <main style={{ minHeight: "80vh", background: "#f2f2f2" }}>
+        <div style={{ padding: "20px" }}>
+          <h2>Bem-vindo ao BombeirosPro</h2>
+          <p>Conteúdo principal da página com margem de 15px nas laterais.</p>
+        </div>
+      </main>
+      <Footer />
     </>
   );
 }

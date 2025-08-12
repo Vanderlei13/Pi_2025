@@ -6,7 +6,6 @@ const Carrossel = () => {
   const [slideAtual, setSlideAtual] = useState(0);
   const [estaPausado, setEstaPausado] = useState(false);
 
-  // Array com 5 imagens (você substituirá pelos caminhos das suas imagens)
   const slides = [
     {
       id: 1,
@@ -40,7 +39,6 @@ const Carrossel = () => {
     }
   ];
 
-  // Navegação automática
   useEffect(() => {
     if (!estaPausado) {
       const temporizador = setTimeout(() => {
@@ -51,7 +49,6 @@ const Carrossel = () => {
     }
   }, [slideAtual, estaPausado, slides.length]);
 
-  // Funções de navegação
   const irParaSlide = (indice) => {
     setSlideAtual(indice);
   };
@@ -88,7 +85,6 @@ const Carrossel = () => {
         ))}
       </div>
 
-      {/* Botões de navegação */}
       <button className="carousel-button prev" onClick={irParaAnterior}>
         <FaChevronLeft />
       </button>
@@ -96,7 +92,6 @@ const Carrossel = () => {
         <FaChevronRight />
       </button>
 
-      {/* Indicadores */}
       <div className="carousel-indicators">
         {slides.map((_, indice) => (
           <button
