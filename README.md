@@ -81,7 +81,7 @@ Pi_2025/
     npm install tailwindcss @tailwindcss/vite
 
 
-3. **Inicie o servidor de desenvolvimento**
+3. **Inicie o servidor de desenvolvimento:**
     npm run dev
 
 
