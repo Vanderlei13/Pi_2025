@@ -24,8 +24,8 @@ const Header = () => {
         <nav className="nav-links">
           <a href="#">Home</a>
           <a href="#">Locação</a>
-          <a href="#">Anúncios</a>
-          <a href="#">Contato</a>
+          <a heref="#">Anúncios</a>
+          <Link to="/contato">Contato</Link>
         </nav>
         <div className="user-info">
           <div className="user-avatar">EM</div>
