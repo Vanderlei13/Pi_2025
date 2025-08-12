@@ -69,15 +69,15 @@ Pi_2025/
 ## Como Executar o Projeto
 
 
-1. **Clone este repositório**
+1. **Clone este repositório:**
    git clone https://github.com/EmanuelBSM/Pi_2025.git
 
 
-2. **Instale as dependencias**
+2. **Instale as dependencias:**
     npm install
 
 
-3. **Instalar Tailwind CSS**
+3. **Instalar Tailwind CSS:**
     npm install tailwindcss @tailwindcss/vite
 
 
@@ -85,6 +85,6 @@ Pi_2025/
     npm run dev
 
 
-4. **Abra no navegador**
+4. **Abra no navegador:**
     http://localhost:5173
    
