@@ -1,4 +1,4 @@
-CREATE DATABASE bombereiros_pro WITH LC_COLLATE = 'pt_BR.UTF-8' LC_CTYPE = 'pt_BR.UTF-8';
+CREATE DATABASE bombereiros_pro WITH LC_COLLATE = 'pt_BR.UTF-8' LC_CTYPE = 'pt_BR.UTF-8' ENCODING = 'UTF-8' TEMPLATE template0;
 
 CREATE SCHEMA bomb_bd;
 
