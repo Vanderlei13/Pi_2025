@@ -85,21 +85,23 @@ const Carrossel = () => {
         ))}
       </div>
 
-      <button className="carousel-button prev" onClick={irParaAnterior}>
+      <button className="carousel-button prev" onClick={irParaAnterior} aria-label="Anterior" type="button">
         <FaChevronLeft />
       </button>
-      <button className="carousel-button next" onClick={irParaProximo}>
+      <button className="carousel-button next" onClick={irParaProximo} aria-label="Próximo" type="button">
         <FaChevronRight />
       </button>
 
       <div className="carousel-indicators">
-        {slides.map((_, indice) => (
-          <button
-            key={indice}
-            className={`indicator ${indice === slideAtual ? 'active' : ''}`}
-            onClick={() => irParaSlide(indice)}
-          />
-        ))}
+                  {slides.map((_, indice) => (
+            <button
+              key={indice}
+              className={`indicator ${indice === slideAtual ? 'active' : ''}`}
+              onClick={() => irParaSlide(indice)}
+              aria-label={`Ir para o slide ${indice + 1}`}
+              type="button"
+            />
+          ))}
       </div>
     </div>
   );
