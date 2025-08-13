@@ -22,7 +22,7 @@ function Seus_anuncios() {
           </div>
         </Link>
         
-        <Link>
+        <Link to="/descrever_produto">
           <div className="card">
             <p>Novo Anúncio</p>
             <FaPlus className="icon" />
