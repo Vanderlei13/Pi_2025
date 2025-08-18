@@ -1,7 +1,7 @@
 import Header from "../componentes/header.jsx";
 // import Carrossel from "../componentes/Carousel.jsx";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Contato from "./contato.jsx";
+import Contato from "./envie_sua_mensagem.jsx";
 // import Banner from "./banner.jsx";
 import Anuncios_ativos from "./anuncios_ativos.jsx";
 import Anuncios_inativos from "./anuncios_inativos.jsx";
