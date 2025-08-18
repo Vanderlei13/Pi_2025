@@ -3,6 +3,7 @@ import Carrossel from "../componentes/Carousel.jsx";
 import "../style/secoes_produtos.css";
 import "../style/home_page.css";
 import Footer from "../componentes/footer.jsx";
+import CarrosselVeiculos from "../componentes/CarrosselVeiculos.jsx";
 
 function ScrollSeta({ onClick, side = "left" }) {
 	return (
@@ -126,8 +127,13 @@ export default function HomePage() {
 				/>
 			</section>
 
-			{/* Banner promocional (último bloco) */}
+			{/* Banner promocional */}
 			<BannerPromocional />
+
+			{/* Carrossel de veículos em destaque */}
+			<CarrosselVeiculos />
+
+			{/* Rodapé */}
 			<Footer />
 		</>
 	);
