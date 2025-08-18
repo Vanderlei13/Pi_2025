@@ -32,6 +32,7 @@ export default function Contato() {
           maxWidth: 1100,
           flexWrap: "wrap",
         }}
+        className="contato-main"
       >
         {/* Informações de contato */}
         <div
@@ -44,6 +45,7 @@ export default function Contato() {
             boxShadow: "0 2px 8px #0001",
             maxWidth: 450,
           }}
+          className="contato-card"
         >
           <h2 style={{ fontWeight: "bold", marginBottom: 24 }}>
             Informações de contato
@@ -91,6 +93,7 @@ export default function Contato() {
             boxShadow: "0 2px 8px #0001",
             maxWidth: 450,
           }}
+          className="contato-card"
         >
           <h2 style={{ fontWeight: "bold", marginBottom: 24 }}>Redes Sociais</h2>
           <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 24 }}>
@@ -125,6 +128,43 @@ export default function Contato() {
           </div>
         </div>
       </div>
-  </div>
+      {/* CSS responsivo */}
+      <style>
+        {`
+          @media (max-width: 900px) {
+            .contato-main {
+              flex-direction: column;
+              align-items: stretch;
+              gap: 24px;
+              max-width: 98vw;
+            }
+            .contato-card {
+              min-width: 0 !important;
+              max-width: 100% !important;
+              width: 100% !important;
+              padding: 24px 12px !important;
+            }
+          }
+          @media (max-width: 600px) {
+            .contato-card h2 {
+              font-size: 1.2rem !important;
+            }
+            .contato-card svg {
+              width: 28px !important;
+              height: 28px !important;
+            }
+            .contato-card {
+              padding: 16px 4px !important;
+            }
+            div[style*="padding: 60px 0 30px 0"] h1 {
+              font-size: 2rem !important;
+            }
+            div[style*="padding: 60px 0 30px 0"] p {
+              font-size: 1rem !important;
+            }
+          }
+        `}
+      </style>
+    </div>
   );
 }

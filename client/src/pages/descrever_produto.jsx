@@ -1,17 +1,32 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 
 export default function DescreverProduto() {
+  const fileInputRef = useRef(null);
+  const [preview, setPreview] = useState([]);
+
+  const handleBoxClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
+    const previews = files.map((file) => URL.createObjectURL(file));
+    setPreview(previews);
+  };
+
   return (
     <div style={{ background: "#e9e7e7", minHeight: "100vh", padding: "40px 0" }}>
       <div
         style={{
-          display: "flex",
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
           gap: 32,
           justifyContent: "center",
-          alignItems: "flex-start",
+          alignItems: "stretch",
           maxWidth: 1200,
           margin: "0 auto",
-          flexWrap: "wrap",
         }}
       >
         {/* Adicionar imagens */}
@@ -20,19 +35,66 @@ export default function DescreverProduto() {
             background: "#fff",
             borderRadius: 10,
             padding: "48px 0",
-            minWidth: 420,
+            minWidth: 0,
             minHeight: 420,
-            flex: 1,
-            maxWidth: 520,
+            maxWidth: "100%",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
             boxShadow: "0 2px 8px #0001",
+            cursor: "pointer",
+            position: "relative",
+            transition: "box-shadow 0.3s, transform 0.3s",
+            height: "100%",
           }}
+          className="upload-box"
+          onClick={handleBoxClick}
         >
-          <div style={{ fontSize: "2.5rem", marginBottom: 32 }}>Adicionar imagens</div>
-          <div style={{ fontSize: 80, color: "#888" }}>+</div>
+          {preview.length === 0 ? (
+            <>
+              <div style={{ fontSize: "2.5rem", marginBottom: 32 }}>Adicionar imagens</div>
+              <div style={{ fontSize: 80, color: "#888" }}>+</div>
+            </>
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                gap: 8,
+                flexWrap: "wrap",
+                justifyContent: "center",
+                width: "100%",
+                height: "100%",
+                padding: "24px",
+              }}
+            >
+              {preview.map((src, idx) => (
+                <img
+                  key={idx}
+                  src={src}
+                  alt={`preview-${idx}`}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    maxHeight: "340px",
+                    objectFit: "contain",
+                    borderRadius: 8,
+                    border: "1px solid #ccc",
+                    background: "#fafafa",
+                    display: "block",
+                  }}
+                />
+              ))}
+            </div>
+          )}
+          <input
+            type="file"
+            multiple
+            accept="image/*"
+            ref={fileInputRef}
+            style={{ display: "none" }}
+            onChange={handleFileChange}
+          />
         </div>
 
         {/* Formulário */}
@@ -41,10 +103,13 @@ export default function DescreverProduto() {
             background: "#fff",
             borderRadius: 10,
             padding: "32px 36px",
-            minWidth: 420,
-            flex: 1,
-            maxWidth: 520,
+            minWidth: 0,
+            maxWidth: "100%",
             boxShadow: "0 2px 8px #0001",
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
           }}
         >
           <h2 style={{ fontWeight: "bold", marginBottom: 24 }}>Descreva seu produto</h2>
@@ -130,6 +195,23 @@ export default function DescreverProduto() {
           </form>
         </div>
       </div>
+
+      {/* Animação leve ao passar o mouse */}
+      <style>
+        {`
+          .upload-box:hover {
+            box-shadow: 0 6px 24px #b71c1c44;
+            transform: translateY(-4px) scale(1.03);
+          }
+          @media (max-width: 900px) {
+            div[style*="display: grid"] {
+              grid-template-columns: 1fr !important;
+              gap: 24px !important;
+              max-width: 98vw !important;
+            }
+          }
+        `}
+      </style>
     </div>
   );
 }
