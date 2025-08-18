@@ -7,7 +7,7 @@ const Header = () => {
   // const navigate = useNavigate(); // Serve para navegar entre as paginas 
   return (
     <header className="header">
-      <div className="logo"><img src="/Imagens/Logo.png" alt="Logo BombeirosPro"/></div>
+      <Link to='/'><div className="logo"><img src="/Imagens/Logo.png" alt="Logo BombeirosPro"/></div></Link>
 
       <div className="search-bar">
         <input
@@ -28,7 +28,7 @@ const Header = () => {
           <Link to="/contato">Contato</Link>
         </nav>
 
-      <Link to="/">
+      <Link to="/carrinho_de_compras" className="cart-link">
         <div className="user-info">
           <div className="user-avatar">EM</div>
           <span>Emanuel</span>

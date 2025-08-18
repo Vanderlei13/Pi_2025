@@ -30,7 +30,6 @@
   display: flex;
   flex-direction: column;
   font-size: 1.1rem;
-  margin-bottom: 0;
 }
 
 .cadastro-form input {
@@ -48,6 +47,14 @@
   flex-direction: column;
   align-items: center;
   gap: 18px;
+  
+}
+
+.cadastro-side > #bombeiro-img {
+  width: 200px;
+  height: auto;
+  align-self: flex-start;
+  margin-bottom: -20px;
 }
 
 .cadastro-termos {
@@ -55,15 +62,17 @@
   color: #fff;
   border-radius: 14px;
   padding: 24px 32px;
-  margin-bottom: 12px;
-  width: 320px;
   display: flex;
   flex-direction: column;
   gap: 22px;
+  height: 100px;
+  width: 400px;
+  margin-top: 30px;
 }
 
 .termo-row {
   display: flex;
+  margin-top: -10px;
   justify-content: space-between;
   align-items: center;
   font-size: 1.1rem;
@@ -86,10 +95,11 @@
 .slider {
   position: absolute;
   cursor: pointer;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #fff;
+  top: -8px; left: 0; right: 0; bottom: 0;
+  background-color: #6d1818;
   border-radius: 28px;
   transition: .4s;
+  width: 50px;
 }
 
 .slider:before {
@@ -97,13 +107,13 @@
   content: "";
   height: 20px; width: 20px;
   left: 4px; bottom: 4px;
-  background-color: #b22222;
+  background-color: #fff;
   border-radius: 50%;
   transition: .4s;
 }
 
 .switch input:checked + .slider {
-  background-color: #fff;
+  background-color: #6d1818;
 }
 
 .switch input:checked + .slider:before {
@@ -111,14 +121,16 @@
 }
 
 /* Bombeiro image */
-.bombeiro-img {
-  width: 120px;
-  margin: 12px 0;
+#bombeiro-img {
+  width: 200px;
+  margin: 12px 0 0 0;
+  display: block;
 }
 
 /* Cadastrar button */
 .cadastro-btn {
-  width: 100%;
+  width: 170%;
+  height: 60px;
   background: #b22222;
   color: #fff;
   font-size: 2rem;
@@ -127,10 +139,16 @@
   border-radius: 14px;
   padding: 14px 0;
   cursor: pointer;
-  margin-top: 8px;
+  margin-top: 0px;
   transition: background 0.2s;
+  box-shadow: none;
 }
 
 .cadastro-btn:hover {
   background: #a11d1d;
+}
+
+.img-and-button {
+  margin-top: 70px;
+  margin-left: -90px;
 }

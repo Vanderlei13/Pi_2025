@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../style/Cadastro.css";
-import bombeiroImg from "../../public/Imagens/bombeiro.png"; // ajuste o caminho conforme sua estrutura
+import bombeiroImg from "../../public/Imagens/bombeiro.png";
 
 export default function Cadastro() {
   const [termos, setTermos] = useState(false);
@@ -53,8 +53,10 @@ export default function Cadastro() {
               </label>
             </div>
           </div>
-          <img src={bombeiroImg} alt="Bombeiro" className="bombeiro-img" />
-          <button className="cadastro-btn">Cadastrar</button>
+          <div className="img-and-button">
+            <img src={bombeiroImg} alt="Bombeiro" id="bombeiro-img" />
+            <button className="cadastro-btn">Cadastrar</button>
+          </div>
         </div>
       </div>
     </div>
