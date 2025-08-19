@@ -1,13 +1,9 @@
 import React, { useRef, useState } from "react";
 
-// const addProduct = async () => {
-
-// }
-
-
 export default function DescreverProduto() {
   const fileInputRef = useRef(null);
   const [preview, setPreview] = useState([]);
+  const [valor, setValor] = useState("");
 
   const handleBoxClick = () => {
     if (fileInputRef.current) {
@@ -19,6 +15,13 @@ export default function DescreverProduto() {
     const files = Array.from(e.target.files);
     const previews = files.map((file) => URL.createObjectURL(file));
     setPreview(previews);
+  };
+
+  // Formata o valor para R$ x,xx
+  const handleValorChange = (e) => {
+    let v = e.target.value.replace(/\D/g, "");
+    v = (Number(v) / 100).toFixed(2);
+    setValor(v === "0.00" ? "" : `R$ ${v.replace(".", ",")}`);
   };
 
   return (
@@ -65,30 +68,42 @@ export default function DescreverProduto() {
             <div
               style={{
                 display: "flex",
-                gap: 8,
                 flexWrap: "wrap",
                 justifyContent: "center",
+                alignItems: "center",
                 width: "100%",
-                height: "100%",
+                minHeight: 340,
+                gap: 16,
                 padding: "24px",
               }}
             >
               {preview.map((src, idx) => (
-                <img
+                <div
                   key={idx}
-                  src={src}
-                  alt={`preview-${idx}`}
                   style={{
-                    width: "100%",
-                    height: "100%",
-                    maxHeight: "340px",
-                    objectFit: "contain",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    background: "#fafafa",
                     borderRadius: 8,
                     border: "1px solid #ccc",
-                    background: "#fafafa",
-                    display: "block",
+                    width: "220px",
+                    height: "220px",
+                    margin: 4,
                   }}
-                />
+                >
+                  <img
+                    src={src}
+                    alt={`preview-${idx}`}
+                    style={{
+                      maxWidth: "90%",
+                      maxHeight: "90%",
+                      objectFit: "contain",
+                      display: "block",
+                      margin: "auto",
+                    }}
+                  />
+                </div>
               ))}
             </div>
           )}
@@ -150,9 +165,29 @@ export default function DescreverProduto() {
               />
             </div>
             <div style={{ marginBottom: 18 }}>
-              <label style={{ fontWeight: 500 }}>Localização</label>
+              <label style={{ fontWeight: 500 }}>Quantidade</label>
+              <input
+                type="number"
+                min={1}
+                style={{
+                  width: "100%",
+                  padding: "12px",
+                  borderRadius: 10,
+                  border: "1px solid #888",
+                  marginTop: 4,
+                  fontSize: 16,
+                  outline: "none",
+                }}
+              />
+            </div>
+            <div style={{ marginBottom: 18 }}>
+              <label style={{ fontWeight: 500 }}>Valor</label>
               <input
                 type="text"
+                value={valor}
+                onChange={handleValorChange}
+                placeholder="R$ 0,00"
+                maxLength={15}
                 style={{
                   width: "100%",
                   padding: "12px",
