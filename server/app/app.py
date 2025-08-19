@@ -5,27 +5,13 @@ from sqlalchemy import inspect
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI']='postgresql://postgres:Gustav0br07?psql@localhost/bombereiros_pro'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@localhost:5432/bombereiros_pro'
 
 CORS(app)
 
 db = SQLAlchemy(app)
 
 from sqlalchemy import inspect, text
-
-eu = {
-"id": 2,
-"senha": "senhafrraca",
-"email": "gusborsatto@maigl.com",
-"nome": "Gustavo",
-"sobrenome": "Borsatto Ritter",
-"cep": 890708072,
-"rua": "Canadá",
-"bairro": "Guilherme Reich",
-"cidade": "Concórdia",
-"estado": "Santa Catarina"
-}
-
 
 with app.app_context():
     inspector = inspect(db.engine)
@@ -36,12 +22,6 @@ with app.app_context():
     for col in columns:
         print(col['name'], col['type'])
 
-    # db.session.execute(text("""
-    #     INSERT INTO bomb_bd.usuario 
-    #     (id, senha, email, nome, sobrenome, cep, rua, bairro, cidade, estado) 
-    #     VALUES (:id, :senha, :email, :nome, :sobrenome, :cep, :rua, :bairro, :cidade, :estado)
-    # """), eu)
-    # db.session.commit()
     result = db.session.execute(text("SELECT * FROM bomb_bd.usuario LIMIT 5"))
     for row in result:
         print(row)
@@ -53,14 +33,20 @@ def adicio_usuario():
     try:
         db.session.execute(
             text("""
-                INSERT INTO bomb_bd.usuario 
-                (id, senha, email, nome, sobrenome, cep, rua, bairro, cidade, estado)
-                VALUES (:id, :senha, :email, :nome, :sobrenome, :cep, :rua, :bairro, :cidade, :estado)
+                INSERT INTO bomb_bd.usuario (senha, email, nome, telefone)
+                VALUES (:senha, :email, :nome, :telefone)
             """),
-            data
+            {
+                "senha": data.get("senha"),
+                "email": data.get("email"),
+                "nome": data.get("nome"),
+                "telefone": data.get("telefone")
+            }
         )
         db.session.commit()
         return jsonify({"status": "deu boa", "message": "Adicionemo o gurizao do rs!"})
     except Exception as e:
-        print("Erro:", e)  # aqui você vai ver o erro no console do Flask
+        print("Erro:", e)
         return jsonify({"status": "faz direito", "message": "nao deu boa pia", "error": str(e)})
+
+# @app.route("")

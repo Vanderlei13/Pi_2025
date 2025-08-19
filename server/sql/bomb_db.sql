@@ -3,11 +3,12 @@ CREATE DATABASE bombereiros_pro WITH LC_COLLATE = 'pt_BR.UTF-8' LC_CTYPE = 'pt_B
 CREATE SCHEMA bomb_bd;
 
 CREATE TABLE bomb_bd.usuario (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     senha VARCHAR NOT NULL,
     email VARCHAR NOT NULL,
+    telefone INTEGER NOT NULL,
     nome VARCHAR NOT NULL,
-    sobrenome VARCHAR NOT NULL,
+    sobrenome VARCHAR,
     cep INTEGER,
     rua VARCHAR,
     bairro VARCHAR,
@@ -16,7 +17,7 @@ CREATE TABLE bomb_bd.usuario (
 );
 
 CREATE TABLE bomb_bd.anuncios (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     idUsuario INTEGER,
     CONSTRAINT fk_usuario_id
     FOREIGN KEY (idUsuario)
@@ -30,7 +31,7 @@ CREATE TABLE bomb_bd.anuncios (
 );
 
 CREATE TABLE bomb_bd.pedidos (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     idUsuario INTEGER,
     CONSTRAINT fk_usuario_id
     FOREIGN KEY (idUsuario)
@@ -55,7 +56,7 @@ CREATE TABLE bomb_bd.pedido_itens (
 );
 
 CREATE TABLE bomb_bd.msg (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     idUsuario INTEGER,
     CONSTRAINT fk_usuario_id
     FOREIGN KEY (idUsuario)

@@ -12,18 +12,21 @@ export default function Cadastro() {
   const [senha, setSenha] = useState("");
 
 const postUsers = async () => {
+  // console.log(nome)
+  // console.log(email)
+  // console.log(senha)
+  // console.log(telefone)
+
   try {
     const res = await axios.post("http://localhost:5000/add_usuario", {
-      id: 3,
       nome: nome,
       email: email,
       senha: senha,
       telefone: telefone
     });
-    console.log(res.data); // mostra a resposta do backend
+    console.log(res.data);
     alert("Usuário adicionado com sucesso!");
   } catch (error) {
-    // se o backend retornar um JSON com erro
     if (error.response) {
       console.error("Erro do backend:", error.response.data);
       alert("Erro: " + JSON.stringify(error.response.data));
@@ -33,7 +36,6 @@ const postUsers = async () => {
     }
   }
 };
-
 
   return (
     <div className="cadastro-container">
