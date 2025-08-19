@@ -8,6 +8,10 @@ import Sim from './pages/compra_de_item.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
+<<<<<<< HEAD
     <App/>
+=======
+    <App />
+>>>>>>> d73b5f990fa648b19a5f3e84ee29b6189e2d7f38
   </StrictMode>
 );
