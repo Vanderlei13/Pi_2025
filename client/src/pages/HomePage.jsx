@@ -2,7 +2,6 @@ import { useRef } from "react";
 import Carrossel from "../componentes/Carousel.jsx";
 import "../style/secoes_produtos.css";
 import "../style/home_page.css";
-import Footer from "../componentes/footer.jsx";
 import CarrosselVeiculos from "../componentes/CarrosselVeiculos.jsx";
 
 function ScrollSeta({ onClick, side = "left" }) {
@@ -134,7 +133,6 @@ export default function HomePage() {
 			<CarrosselVeiculos />
 
 			{/* Rodapé */}
-			<Footer />
 		</>
 	);
 }
