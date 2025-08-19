@@ -1,10 +1,13 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import inspect
 
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI']='postgresql://postgres:Gustav0br07?psql@localhost/bombereiros_pro'
+
+CORS(app)
 
 db = SQLAlchemy(app)
 
@@ -46,7 +49,7 @@ with app.app_context():
 
 @app.route("/add_usuario", methods=["POST"])
 def adicio_usuario():
-    data = request.json()
+    data = request.json
     try:
         db.session.execute(
             text("""
@@ -58,5 +61,6 @@ def adicio_usuario():
         )
         db.session.commit()
         return jsonify({"status": "deu boa", "message": "Adicionemo o gurizao do rs!"})
-    except:
-        return jsonify({"status": "faz direito", "message": "nao deu boa pia"})
+    except Exception as e:
+        print("Erro:", e)  # aqui você vai ver o erro no console do Flask
+        return jsonify({"status": "faz direito", "message": "nao deu boa pia", "error": str(e)})
