@@ -1,5 +1,10 @@
 import React, { useRef, useState } from "react";
 
+// const addProduct = async () => {
+
+// }
+
+
 export default function DescreverProduto() {
   const fileInputRef = useRef(null);
   const [preview, setPreview] = useState([]);
