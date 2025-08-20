@@ -57,7 +57,7 @@ def init_routes(app):
         try:
             result = db.session.execute(
                 text("""
-                    SELECT nome, preco, tipo, quantidade FROM bomb_bd.anuncios
+                    SELECT nome, preco, tipo, quantidade FROM bomb_bd.anuncios WHERE status_anuncio = 1
                     ORDER BY id ASC
                 """)
             )
@@ -72,8 +72,8 @@ def init_routes(app):
     def show_anuncios_inativos():
         try:
             result = db.session.execute(
-                text(""""
-                    SELECT nome, preco, tipo, quantidade FROM bomb_bd.anuncios WHERE status_anuncio = 2
+                text("""
+                    SELECT nome, preco, tipo, descricao, quantidade FROM bomb_bd.anuncios WHERE status_anuncio = 2
                     ORDER BY id ASC
                 """)
             )

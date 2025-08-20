@@ -4,7 +4,7 @@ import axios from 'axios';
 
 export default function Anuncios_inativos() {
   const [anuncios, setAnuncios] = useState([]);
-  console.log(anuncios)
+
   useEffect(() => {
     axios.get("http://localhost:5000/anuncios_inativos")
       .then((res) => {
@@ -17,22 +17,24 @@ export default function Anuncios_inativos() {
   }, []);
 
 
-
   return (
-    <div className="pg10-container">
-      <h1 className="pg10-title">Seus Anúncios Inativos</h1>
-      <div className="pg10-cards-row">
-        
-        <div className="card">
-          <div className="imagem">
-            <img src="" alt="" />
+      <div className="pg10-container">
+        <h1 className="pg10-title">Seus Anúncios Inativos</h1>
+        {anuncios.map((item, index) => (
+          <div className="pg10-cards-row">
+            <div className="card" key={index}>
+              <div className="imagem">
+                <img src={null} />
+              </div>
+              <h3>{item.nome}</h3>
+              <div className="descricao">{item.descricao}</div>
+              <div className="preco">{item.preco}</div>
+              <button className="btn-detalhes">Ver detalhes</button>
+            </div>
           </div>
-          <h3>Calça civil</h3>
-          <div className="descricao">Proteção, mobilidade e<br />durabilidade</div>
-          <div className="preco">R$ 350,00</div>
-          <button className="btn-detalhes">Ver detalhes</button>
-        </div>
+        ))}
+
       </div>
-    </div>
+
   );
 }
