@@ -1,11 +1,30 @@
+import { useEffect } from "react";
 import React from "react";
+import axios from "axios";
 import "../style/anuncios_ativos.css";
 
 export default function Anuncios_ativos() {
+  let express_data = ""
+
+  axios.get("http://localhost:5000/anuncios_ativos")
+    .then((res) => {
+      // data_anunc = res.data["data"]
+      showAnunc(res);
+    })
+    .catch((err) => {
+      console.error("Erro na requisição:", err);
+    });
+
+  const showAnunc = (dat) => {
+    express_data = dat.data["data"]
+    console.log(express_data[0]["nome"]);
+    // anuncios = [
+    //   { nome: express_data[0]["nome"], preco: "R$ 350,00", classe: "img-cinto" }
+    // ];
+  }
+
   const anuncios = [
-    { nome: "Cinto", preco: "R$ 350,00", classe: "img-cinto" },
-    { nome: "Corda 150m x 12mm", preco: "R$ 350,00", classe: "img-corda" },
-    { nome: "Mosquetão D45 KN", preco: "R$ 350,00", classe: "img-mosquetao" },
+    { nome: "nome", preco: "R$ 350,00", classe: "img-cinto" }
   ];
 
   return (
@@ -22,8 +41,9 @@ export default function Anuncios_ativos() {
             </div>
           </div>
         ))}
-      </div>    
+      </div>
     </div>
   );
+
 }
 

@@ -1,6 +1,6 @@
 from flask import request, jsonify
 from sqlalchemy import text
-from app import db, app
+from app import db
 
 def init_routes(app):
     @app.route("/add_usuario", methods=["POST"])
@@ -52,5 +52,16 @@ def init_routes(app):
     
 
 
-
-
+    @app.route("/anuncios_ativos", methods=["GET"])
+    def show_anuncios_ativos():
+        try:
+            result = db.session.execute(
+                text("""
+                    SELECT nome, preco, tipo FROM bomb_bd.anuncios
+                    ORDER BY id ASC
+                """)
+            )
+            anuncios = [dict(row) for row in result.mappings()]
+            return jsonify({"status": "Sucesso", "data": anuncios})
+        except Exception as e:
+            return jsonify({"status": "Falha", "message": "Não ta showing", "error": str(e)})
