@@ -7,6 +7,6 @@ import Item from './pages/compra_de_item.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <Item />
+    <App />
   </StrictMode>
 );

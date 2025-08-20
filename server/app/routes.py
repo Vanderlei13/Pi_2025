@@ -57,7 +57,23 @@ def init_routes(app):
         try:
             result = db.session.execute(
                 text("""
-                    SELECT nome, preco, tipo FROM bomb_bd.anuncios
+                    SELECT nome, preco, tipo, quantidade FROM bomb_bd.anuncios
+                    ORDER BY id ASC
+                """)
+            )
+            anuncios = [dict(row) for row in result.mappings()]
+            return jsonify({"status": "Sucesso", "data": anuncios})
+        except Exception as e:
+            return jsonify({"status": "Falha", "message": "Não ta showing", "error": str(e)})
+        
+
+
+    @app.route("/anuncios_inativos", methods=["GET"])
+    def show_anuncios_inativos():
+        try:
+            result = db.session.execute(
+                text(""""
+                    SELECT nome, preco, tipo, quantidade FROM bomb_bd.anuncios WHERE status_anuncio = 2
                     ORDER BY id ASC
                 """)
             )
