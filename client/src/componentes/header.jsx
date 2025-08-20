@@ -33,7 +33,7 @@ const Header = () => {
         </nav>
 
         <div className="user-cart">
-          <Link to="/cadastro-ritter" className="user-info">
+          <Link to="/cadastro" className="user-info">
             <div className="user-avatar">
               <FaUser />
             </div>
