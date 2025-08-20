@@ -1,9 +1,44 @@
 import React, { useRef, useState } from "react";
+import axios from "axios";
 
 export default function DescreverProduto() {
   const fileInputRef = useRef(null);
   const [preview, setPreview] = useState([]);
   const [valor, setValor] = useState("");
+  const [nome, setNome] = useState("");
+  const [tipo, setTipo] = useState("");
+  const [quantidade, setQuantidade] = useState("");
+  const [preco, setPreco] = useState("");
+  const [descricao, setDescricao] = useState("");
+
+  const postProduto = async () => {
+    console.log(nome)
+    console.log(tipo)
+    console.log(quantidade)
+    console.log(preco)
+    console.log(descricao)
+
+    try {
+    const res = await axios.post("http://localhost:5000/add_product", {
+      nome: nome,
+      tipo: tipo,
+      quantidade: quantidade,
+      preco: preco,
+      descricao: descricao,
+      total: preco*quantidade
+    });
+    console.log(res.data);
+    alert("Anúncio adicionado com sucesso!");
+  } catch (error) {
+    if (error.response) {
+      console.error("Erro do backend:", error.response.data);
+      alert("Erro: " + JSON.stringify(error.response.data));
+    } else {
+      console.error("Erro:", error.message);
+      alert("Erro: " + error.message);
+    }
+  }
+  }
 
   const handleBoxClick = () => {
     if (fileInputRef.current) {
@@ -138,6 +173,7 @@ export default function DescreverProduto() {
               <label style={{ fontWeight: 500 }}>Nome do produto</label>
               <input
                 type="text"
+                value={nome}
                 style={{
                   width: "100%",
                   padding: "12px",
@@ -147,12 +183,14 @@ export default function DescreverProduto() {
                   fontSize: 16,
                   outline: "none",
                 }}
+                onChange={(e) => setNome(e.target.value)}
               />
             </div>
             <div style={{ marginBottom: 18 }}>
               <label style={{ fontWeight: 500 }}>Tipo do produto</label>
               <input
                 type="text"
+                value={tipo}
                 style={{
                   width: "100%",
                   padding: "12px",
@@ -162,6 +200,7 @@ export default function DescreverProduto() {
                   fontSize: 16,
                   outline: "none",
                 }}
+                onChange={(e) => setTipo(e.target.value)}
               />
             </div>
             <div style={{ marginBottom: 18 }}>
@@ -169,6 +208,7 @@ export default function DescreverProduto() {
               <input
                 type="number"
                 min={1}
+                value={quantidade}
                 style={{
                   width: "100%",
                   padding: "12px",
@@ -178,14 +218,14 @@ export default function DescreverProduto() {
                   fontSize: 16,
                   outline: "none",
                 }}
+                onChange={(e) => setQuantidade(e.target.value)}
               />
             </div>
             <div style={{ marginBottom: 18 }}>
               <label style={{ fontWeight: 500 }}>Valor</label>
               <input
                 type="text"
-                value={valor}
-                onChange={handleValorChange}
+                value={preco}
                 placeholder="R$ 0,00"
                 maxLength={15}
                 style={{
@@ -197,12 +237,17 @@ export default function DescreverProduto() {
                   fontSize: 16,
                   outline: "none",
                 }}
+                onChange={(e) => {
+                  handleValorChange(e);
+                  setPreco(e.target.value);
+                }}
               />
             </div>
             <div style={{ marginBottom: 28 }}>
               <label style={{ fontWeight: 500 }}>Descrição</label>
               <textarea
                 rows={4}
+                value={descricao}
                 style={{
                   width: "100%",
                   padding: "12px",
@@ -213,10 +258,13 @@ export default function DescreverProduto() {
                   outline: "none",
                   resize: "none",
                 }}
+                onChange={(e) => setDescricao(e.target.value)}
               />
             </div>
+          </form>
             <button
               type="submit"
+              onClick={postProduto}
               style={{
                 width: "100%",
                 background: "#b71c1c",
@@ -232,7 +280,6 @@ export default function DescreverProduto() {
             >
               Anunciar
             </button>
-          </form>
         </div>
       </div>
 

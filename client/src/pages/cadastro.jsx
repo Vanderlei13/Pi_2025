@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import axios from "axios";
 import "../style/Cadastro.css";
 import bombeiroImg from "../../public/Imagens/bombeiro.png";

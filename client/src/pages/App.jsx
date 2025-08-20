@@ -10,7 +10,7 @@ import HomePage from "./HomePage.jsx";
 import DescreverProduto from "./descrever_produto.jsx";
 import Carrinho_de_compras from "./carrinho_de_compras.jsx";
 import Footer from "../componentes/footer.jsx";
-import Cadastro  from "./cadastro-Ritter.jsx";
+import Cadastro  from "./cadastro.jsx";
 
 export default function App() {
     return (
@@ -25,7 +25,7 @@ export default function App() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/descrever_produto" element={<DescreverProduto />}/>
                 <Route path="/carrinho_de_compras" element={<Carrinho_de_compras/>}/>
-                <Route path="/cadastro-Ritter" element={<Cadastro />} />
+                <Route path="/cadastro" element={<Cadastro />} />
             </Routes>
             <Footer />
         </BrowserRouter>
