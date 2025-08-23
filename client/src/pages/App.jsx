@@ -11,6 +11,7 @@ import DescreverProduto from "./descrever_produto.jsx";
 import Carrinho_de_compras from "./carrinho_de_compras.jsx";
 import Footer from "../componentes/footer.jsx";
 import Cadastro  from "./cadastro.jsx";
+import VerDetalhes from "./ver_detalhes.jsx";
 
 export default function App() {
     return (
@@ -26,6 +27,7 @@ export default function App() {
                 <Route path="/descrever_produto" element={<DescreverProduto />}/>
                 <Route path="/carrinho_de_compras" element={<Carrinho_de_compras/>}/>
                 <Route path="/cadastro" element={<Cadastro />} />
+                <Route path="/ver_detalhes" element={<VerDetalhes />} />
             </Routes>
             <Footer />
         </BrowserRouter>

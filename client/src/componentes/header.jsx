@@ -27,7 +27,6 @@ const Header = () => {
       <div className="header-right">
         <nav className="nav-links">
           <Link to="/">Home</Link>
-          <Link to="/anucnios_ativos">Locação</Link>
           <Link to="/seus_anuncios">Anúncios</Link>
           <Link to="/contato">Contato</Link>
         </nav>

@@ -57,7 +57,7 @@ def init_routes(app):
         try:
             result = db.session.execute(
                 text("""
-                    SELECT nome, preco, tipo, quantidade FROM bomb_bd.anuncios WHERE status_anuncio = 1
+                    SELECT id, nome, preco, tipo, descricao, quantidade, status_anuncio FROM bomb_bd.anuncios WHERE status_anuncio = 1
                     ORDER BY id ASC
                 """)
             )

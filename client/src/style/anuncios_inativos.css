@@ -1,135 +1,32 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 
-body {
-  background: #eae8e8;
-  font-family: 'roboto', sans-serif;
-  margin: 0;
+body{
+    font-family: 'Roboto', sans-serif;
 }
 
-.pg10-cards-row, .produtos {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  gap: 40px;
-}
-
-.pg10-container {
-  background: #eae8e8;
-  min-height: 100vh;
-  padding: 32px 0;
-}
-
-.pg10-title {
+.anuncios-container {
+  background-color: #eaeaea;
+  padding: 40px 20px;
   text-align: center;
-  font-size: 2.5rem;
-  font-weight: 500;
+}
+
+.anuncios-container h2 {
+  font-size: 24px;
   margin-bottom: 32px;
   color: #111;
 }
 
-.pagina {
-  display: flex;
-  gap: 40px;
-  padding: 0 40px;
-  min-height: 100vh;
-}
-
-.filtros {
-  background: #fff;
-  border-radius: 32px;
-  padding: 32px 24px;
-  min-width: 260px;
-  margin: 32px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-  height: fit-content;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
-}
-
-.filtros h2 {
-  font-size: 2rem;
-  font-weight: bold;
-  margin-bottom: 16px;
-}
-
-.label-categorias {
-  font-size: 1.2rem;
-  color: #444;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.titulo-preco {
-  font-size: 1.1rem;
-  font-weight: bold;
-  margin: 20px 0 5px;
-}
-
-.valor-preco {
-  color: #888;
-  font-size: 1rem;
-  margin-bottom: 10px;
-}
-
-.slider {
-  width: 90%;
-  accent-color: #d32f2f;
-  margin-top: 8px;
-  background: transparent;
-}
-
-.btn-filtro {
-  background: #222;
-  color: #fff;
-  border: none;
-  border-radius: 18px;
-  padding: 12px 0;
-  font-size: 1.1rem;
-  cursor: pointer;
-  margin-top: 32px;
-  width: 80%;
-  align-self: center;
-  font-weight: bold;
-  transition: background 0.2s;
-}
-
-.btn-filtro:hover {
-  background: #444;
-}
-
-.conteudo {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  margin: 32px 0;
-}
-
-.ordenar {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  font-size: 1.2rem;
-  margin-bottom: 32px;
-  font-weight: bold;
-}
-
-.ordenar-label {
-  font-weight: bold;
-  margin-right: 5px;
-}
-
-.ordenar-selecao {
-  color: #444;
-}
-
-.produtos {
+.anuncios-lista {
   display: flex;
   flex-wrap: wrap;
-  gap: 40px;
+  gap: 20px;
   justify-content: center;
+}
+
+.bloco-branco {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
 }
 
 /* cards */
@@ -143,7 +40,7 @@ body {
   flex-direction: column;
   justify-content: space-between;
   font-family: sans-serif;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   margin-bottom: 32px;
 }
 
@@ -155,12 +52,22 @@ body {
   align-items: center;
   border-bottom-left-radius: 60% 30%;
   border-bottom-right-radius: 60% 30%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
 }
 
-.card .imagem img {
-  max-width: 140px;
-  max-height: 140px;
-  object-fit: contain;
+/* colocar as imgs aq */
+.img-cinto {
+  background-image: url('/imagens/cinto.png');
+}
+
+.img-corda {
+  background-image: url('/imagens/corda.png');
+}
+
+.img-mosquetao {
+  background-image: url('/imagens/mosquetao.png');
 }
 
 .card h3 {
@@ -169,13 +76,6 @@ body {
   margin: 10px 0 5px;
   text-align: center;
   font-weight: bold;
-}
-
-.card .descricao {
-  color: #f3f3f3;
-  font-size: 1.1rem;
-  text-align: center;
-  margin-bottom: 8px;
 }
 
 .card .preco {
@@ -192,7 +92,7 @@ body {
   border-radius: 40px;
   padding: 12px 0;
   width: 80%;
-  margin: 0 auto 20px;
+  margin: 0 auto 10px;
   font-size: 16px;
   cursor: pointer;
   font-weight: bold;
@@ -202,4 +102,40 @@ body {
 
 .card .btn-detalhes:hover {
   background: #d32f2f;
+}
+
+.card .btn-ativo {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 40px;
+  padding: 10px 0;
+  width: 80%;
+  margin: 0 auto 15px;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: bold;
+  display: block;
+  transition: background 0.2s;
+}
+
+.card .btn-ativo:hover {
+  background: #495057;
+}
+
+.btn-ativo {
+  background-color: #6c757d !important;
+  color: white;
+  border: none;
+  border-radius: 40px;
+  padding: 10px 0;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: bold;
+  display: block;
+  transition: background 0.2s;
+}
+
+.btn-ativo:hover {
+  background: #495057 !important;
 }

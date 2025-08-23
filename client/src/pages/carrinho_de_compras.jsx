@@ -6,17 +6,17 @@ const PRODUTOS = [
   {
     nome: "Capacete profissional - Resistente a 500°C",
     ref: "CAP-2025",
-    marca: "ProFire"
+    tipo: "ProFire"
   },
   {
     nome: "Bota de couro ignífugo - Solado antiderrapante",
     ref: "BOT-2025",
-    marca: "FireShield"
+    tipo: "FireShield"
   },
   {
     nome: "Bota de couro ignífugo - Solado antiderrapante",
     ref: "BOT-2025",
-    marca: "FireShield"
+    tipo: "FireShield"
   }
 ];
 
@@ -59,7 +59,7 @@ export default function Carrinho_de_compras() {
                     <div className="cart-item-info">
                       <div className="cart-item-name">{produto.nome}</div>
                       <div className="cart-item-ref">
-                        Ref.: {produto.ref}<br />Marca: {produto.marca}
+                        Ref.: {produto.ref}<br />Tipo: {produto.tipo}
                       </div>
                       <div className="cart-item-actions">
                         <button className="cart-btn cart-btn-remove" onClick={() => handleExcluir(idx)}>Excluir</button>
