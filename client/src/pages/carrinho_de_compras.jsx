@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../style/carrinho_de_compras.css';
+import { Link } from 'react-router-dom';
 
 const PRECO_ITENS = [1624, 1624, 1624];
 const PRODUTOS = [
@@ -109,7 +110,9 @@ export default function Carrinho_de_compras() {
             <span className="cart-summary-total-label">Total</span>
             <span className="cart-summary-total-value">R$ {total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
           </div>
-          <button className="cart-summary-btn">Finalizar Compra</button>
+          <Link to="/adicionar_info">
+            <button className="cart-summary-btn">Finalizar Compra</button>
+          </Link>
         </div>
       </div>
     </div>

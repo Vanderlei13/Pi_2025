@@ -15,6 +15,24 @@ body {
   align-items: flex-start;
 }
 
+.pg19-error {
+  color: #fff;
+  background: #d32f2f;
+  padding: 8px;
+  margin: 10px 0;
+  border-radius: 4px;
+  text-align: center;
+}
+.pg19-enviando {
+  color: #fff;
+  background: #d32f2f;
+  padding: 12px;
+  margin: 20px 0;
+  border-radius: 4px;
+  text-align: center;
+  font-weight: bold;
+}
+
 .pg19-form {
   background: #fff;
   border-radius: 8px;

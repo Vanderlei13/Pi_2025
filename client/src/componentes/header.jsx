@@ -32,7 +32,7 @@ const Header = () => {
         </nav>
 
         <div className="user-cart">
-          <Link to="/cadastro" className="user-info">
+          <Link to="/login" className="user-info">
             <div className="user-avatar">
               <FaUser />
             </div>

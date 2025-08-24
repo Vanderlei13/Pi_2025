@@ -1,0 +1,98 @@
+.login-container {
+  background: #ededed;
+  min-height: 100vh;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login-title {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-top: 48px;
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.login-content {
+  display: flex;
+  gap: 48px;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 32px 32px 24px 32px;
+  min-width: 380px;
+  box-sizing: border-box;
+}
+
+.login-form label {
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.login-form input[type="email"],
+.login-form input[type="password"] {
+  border: 1px solid #888;
+  border-radius: 3px;
+  padding: 10px 12px;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.login-btn {
+  background: #b71c1c;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 16px 0;
+  font-size: 2rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 24px;
+  transition: background .2s;
+}
+
+.login-btn:hover {
+  background: #a11d1d;
+}
+
+.login-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+#bombeiro-img {
+  width: 160px;
+  margin-bottom: 24px;
+}
+
+.login-bottom-text {
+  text-align: center;
+  margin-top: 32px;
+  font-size: 1.15rem;
+}
+
+.login-error {
+  color: #fff;
+  background: #d32f2f;
+  padding: 10px;
+  margin-top: 18px;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 1.05rem;
+}
