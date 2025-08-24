@@ -14,6 +14,8 @@ import Cadastro  from "./cadastro.jsx";
 import VerDetalhes from "./ver_detalhes.jsx";
 import Adicionar_info from "./adicionar_informacoes.jsx";
 import Login from "./login.jsx";
+import Pesquisa from "./pesquisa.jsx";
+import CompraDeItem from "./compra_de_item.jsx";
 
 export default function App() {
     return (
@@ -32,6 +34,8 @@ export default function App() {
                 <Route path="/ver_detalhes" element={<VerDetalhes />} />
                 <Route path="/adicionar_info" element={< Adicionar_info/>}/>
                 <Route path="/login" element={<Login/>}/>
+                <Route path="/pesquisa" element={<Pesquisa />} />
+                <Route path="/compra_de_item" element={<CompraDeItem />} />
             </Routes>
             <Footer />
         </BrowserRouter>

@@ -13,7 +13,6 @@
 .logo img{
   height: 70px;
   width: auto;
-
 }
 
 .search-bar {
@@ -25,6 +24,7 @@
   border-radius: 9999px;
   overflow: hidden;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  position: relative;
 }
 
 .search-input {
@@ -94,4 +94,55 @@
 a {
   text-decoration: none;
   color: inherit;
+}
+
+.search-results {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-top: 6px;
+  max-width: 420px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  position: absolute;
+  z-index: 100;
+  left: 0;
+  right: 0;
+}
+
+.search-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.search-item {
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.search-item:last-child {
+  border-bottom: none;
+}
+
+.search-nome {
+  font-weight: bold;
+  font-size: 1.08em;
+}
+
+.search-desc {
+  color: #444;
+  font-size: 0.98em;
+  margin: 2px 0 4px 0;
+}
+
+.search-preco {
+  color: #b71c1c;
+  font-weight: bold;
+  font-size: 1.05em;
+}
+
+.search-empty, .search-loading {
+  padding: 16px;
+  text-align: center;
+  color: #888;
 }

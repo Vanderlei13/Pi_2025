@@ -3,6 +3,31 @@ from sqlalchemy import text
 from app import db
 
 def init_routes(app):
+    @app.route("/search_anuncios", methods=["GET"])
+    def search_anuncios():
+        termo = request.args.get("q", "").strip()
+        try:
+            if not termo:
+                return jsonify({"status": "Sucesso", "data": []})
+            result = db.session.execute(
+                text("""
+                    SELECT id, nome, descricao, preco
+                    FROM bomb_bd.anuncios
+                    WHERE status_anuncio = 1
+                    AND (
+                        LOWER(nome) LIKE :termo OR
+                        LOWER(descricao) LIKE :termo OR
+                        LOWER(tipo) LIKE :termo
+                    )
+                    ORDER BY id ASC
+                """),
+                {"termo": f"%{termo.lower()}%"}
+            )
+            anuncios = [dict(row) for row in result.mappings()]
+            return jsonify({"status": "Sucesso", "data": anuncios})
+        except Exception as e:
+            return jsonify({"status": "Falha", "message": "Erro na busca", "error": str(e)})
+
     @app.route("/add_usuario", methods=["POST"])
     def adicio_usuario():
         data = request.json

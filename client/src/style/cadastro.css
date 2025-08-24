@@ -26,6 +26,16 @@
   width: 380px;
 }
 
+.cadastro-erro {
+  color: #fff;
+  background: #d32f2f;
+  padding: 10px;
+  margin-top: 18px;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 1.05rem;
+}
+
 .cadastro-form label {
   display: flex;
   flex-direction: column;

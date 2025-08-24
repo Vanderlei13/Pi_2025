@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "../style/compra_de_item.css";
 
+
 // Caminhos relativos para imagens na pasta public
 const imagens = [
   "/Imagens/capacete1.webp",
@@ -10,6 +11,7 @@ const imagens = [
 ];
 
 export default function CompraDeItem() {
+
   const [imgSelecionada, setImgSelecionada] = useState(3);
 
   return (
