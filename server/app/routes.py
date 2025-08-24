@@ -23,7 +23,7 @@ def init_routes(app):
             return jsonify({"status": "Sucesso", "message": "Usuário adicionado"})
         except Exception as e:
             return jsonify({"status": "Falha", "message": "Usuário não adicionado", "error": str(e)})
-        
+   
 
 
     @app.route("/add_product", methods=["POST"])
@@ -49,7 +49,46 @@ def init_routes(app):
             return jsonify({"status": "Sucesso", "message": "Anúncio adicionado"})
         except Exception as e:
             return jsonify({"status": "Falha", "message": "Anúncio não adicionado", "error": str(e)})
-    
+
+
+
+    @app.route("/tornar_ativo", methods=["POST"])
+    def switch_active():
+        data = request.json
+        try:
+            result = db.session.execute(
+                text(f"""
+                    UPDATE bomb_bd.anuncios
+                    SET status_anuncio = 1
+                    WHERE id = {data.get("id")}
+                """)
+            )
+            db.session.commit()
+            return jsonify({"status": "Sucesso", "message": "Anúncio ativado"})
+        except Exception as e:
+            return jsonify({"status": "Falha", "message": "Anúncio não ativado", "error": str(e)})
+
+
+
+
+    @app.route("/tornar_inativo", methods=["POST"])
+    def switch_inactive():
+        data = request.json
+        try:
+            result = db.session.execute(
+                text(f"""
+                    UPDATE bomb_bd.anuncios
+                    SET status_anuncio = 2
+                    WHERE id = {data.get("id")}
+                """)
+            )
+            db.session.commit()
+            return jsonify({"status": "Sucesso", "message": "Anúncio inativado"})
+        except Exception as e:
+            return jsonify({"status": "Falha", "message": "Anúncio não inativado", "error": str(e)})
+
+
+# GET
 
 
     @app.route("/anuncios_ativos", methods=["GET"])
@@ -73,7 +112,7 @@ def init_routes(app):
         try:
             result = db.session.execute(
                 text("""
-                    SELECT nome, preco, tipo, descricao, quantidade FROM bomb_bd.anuncios WHERE status_anuncio = 2
+                    SELECT id, nome, preco, tipo, descricao, quantidade FROM bomb_bd.anuncios WHERE status_anuncio = 2
                     ORDER BY id ASC
                 """)
             )
@@ -81,3 +120,4 @@ def init_routes(app):
             return jsonify({"status": "Sucesso", "data": anuncios})
         except Exception as e:
             return jsonify({"status": "Falha", "message": "Não ta showing", "error": str(e)})
+            

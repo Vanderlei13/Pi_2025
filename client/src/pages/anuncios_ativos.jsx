@@ -22,20 +22,21 @@ export default function Anuncios_ativos() {
       });
   };
 
-  const tornarInativo = (id) => {
-    axios.post("http://localhost:5000/tornar_inativo", { id })
-      .then((res) => {
-        if (res.data.status === "Sucesso") {
-          alert("Anúncio tornado inativo com sucesso!");
-          carregarAnuncios(); // Recarrega a lista
-        } else {
-          alert("Erro ao tornar inativo: " + res.data.message);
-        }
-      })
-      .catch((err) => {
-        console.error("Erro na requisição:", err);
-        alert("Erro ao tornar inativo");
+  const tornarInativo = async (id) => {
+    try {
+      await axios.post("http://localhost:5000/tornar_inativo", {
+        id: id
       });
+    }
+    catch (error) {
+      if (error.response) {
+        console.error("Erro do backend:", error.response.data);
+        alert("Erro: " + JSON.stringify(error.response.data));
+      } else {
+        console.error("Erro:", error.message);
+        alert("Erro: " + error.message);
+      }
+    }
   };
 
   const irParaInativos = () => {

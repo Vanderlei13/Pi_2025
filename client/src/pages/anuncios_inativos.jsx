@@ -5,6 +5,7 @@ import axios from 'axios';
 
 export default function Anuncios_inativos() {
   const [anuncios, setAnuncios] = useState([]);
+  const [id, setId] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,20 +23,21 @@ export default function Anuncios_inativos() {
       });
   };
 
-  const tornarAtivo = (id) => {
-    axios.post("http://localhost:5000/tornar_ativo", { id })
-      .then((res) => {
-        if (res.data.status === "Sucesso") {
-          alert("Anúncio tornado ativo com sucesso!");
-          carregarAnuncios(); // Recarrega a lista
-        } else {
-          alert("Erro ao tornar ativo: " + res.data.message);
-        }
-      })
-      .catch((err) => {
-        console.error("Erro na requisição:", err);
-        alert("Erro ao tornar ativo");
+  const tornarAtivo = async (id) => {
+    try {
+      await axios.post("http://localhost:5000/tornar_ativo", {
+        id: id
       });
+    }
+    catch (error) {
+      if (error.response) {
+        console.error("Erro do backend:", error.response.data);
+        alert("Erro: " + JSON.stringify(error.response.data));
+      } else {
+        console.error("Erro:", error.message);
+        alert("Erro: " + error.message);
+      }
+    }
   };
 
   const irParaAtivos = () => {
@@ -71,12 +73,12 @@ export default function Anuncios_inativos() {
       </div>
       {anuncios.length > 0 && (
         <div style={{ marginTop: '30px' }}>
-          <button 
-            className="btn-ativo" 
+          <button
+            className="btn-ativo"
             onClick={irParaAtivos}
-            style={{ 
-              width: '200px', 
-              margin: '0 auto', 
+            style={{
+              width: '200px',
+              margin: '0 auto',
               display: 'block'
             }}
           >
