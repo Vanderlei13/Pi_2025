@@ -95,7 +95,6 @@ def init_routes(app):
 
 
 
-
     @app.route("/tornar_inativo", methods=["POST"])
     def switch_inactive():
         data = request.json
@@ -111,6 +110,32 @@ def init_routes(app):
             return jsonify({"status": "Sucesso", "message": "Anúncio inativado"})
         except Exception as e:
             return jsonify({"status": "Falha", "message": "Anúncio não inativado", "error": str(e)})
+
+
+
+
+    @app.route("/login", methods=["GET", "POST"])
+    def login():
+        data = request.get_json()
+        email = data.get("email")
+        senha = data.get("senha")
+
+        if not email or not senha:
+            return jsonify({"status": "Falha", "message": "Preencha email e senha"}), 400
+
+        try:
+            result = db.session.execute(
+                text("SELECT id, email FROM bomb_bd.usuario WHERE email = :email AND senha = :senha"),
+                {"email": email, "senha": senha}
+            ).fetchone()
+
+            if result:
+                return jsonify({"status": "Sucesso", "message": "Logado com sucesso"})
+            else:
+                return jsonify({"status": "Falha", "message": "Email ou senha incorretos"}), 401
+
+        except Exception as e:
+            return jsonify({"status": "Falha", "message": "Erro no login", "error": str(e)}), 500
 
 
 # GET
@@ -144,5 +169,5 @@ def init_routes(app):
             anuncios = [dict(row) for row in result.mappings()]
             return jsonify({"status": "Sucesso", "data": anuncios})
         except Exception as e:
-            return jsonify({"status": "Falha", "message": "Não ta showing", "error": str(e)})
+            return jsonify({"status": "Falha", "message": "Não ta showing", "error": str(e)})   
             

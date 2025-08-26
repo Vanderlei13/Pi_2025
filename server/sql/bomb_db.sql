@@ -13,7 +13,7 @@ CREATE TABLE bomb_bd.usuario (
     id SERIAL PRIMARY KEY,
     senha VARCHAR NOT NULL,
     email VARCHAR NOT NULL,
-    telefone CHAR(11) NOT NULL,
+    telefone CHAR(11) NOT NULL UNIQUE,
     nome VARCHAR NOT NULL,
     cep INTEGER,
     rua VARCHAR,
