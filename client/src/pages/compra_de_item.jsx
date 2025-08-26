@@ -16,10 +16,27 @@ export default function CompraDeItem() {
   const produto = location.state?.produto;
 
 
+  const data = new Date();
+  // const dia = data.getDate();
+  const dia7 = new Date(data);
+  dia7.setDate(dia7.getDate()+7);
+  const dia14 = new Date(data);
+  dia14.setDate(dia14.getDate()+14);
+
+    let disponivel;
+
+  if (produto.quantidade === 1){
+      disponivel = "Último disponível!";
+  }
+
+  else{
+    disponivel = "Disponível";
+  }
+
+
 
   const [imgSelecionada, setImgSelecionada] = useState(3);
 
-  if (!produto) return <p>Carregando...</p>;
   return (
     <div className="compra-item-container">
       <div className="compra-item-gallery">
@@ -45,27 +62,27 @@ export default function CompraDeItem() {
         </div>
         <div className="compra-item-info">
           <div className="info-top">
-            <span className="info-novo">Novo | +20 vendidos</span>
+            <span className="info-novo">{produto.quantidade} unidades</span>
           </div>
-          <h2 className="info-title">{dados.nome}</h2>
+          <h1 className="info-title">{produto.nome}</h1>
           <div className="info-preco">
-            <span className="preco-grande">R$1.165</span>
+            <span className="preco-grande">R${produto.preco}</span>
             <div className="preco-parcela">
-              em <b>12x R$97,08 sem juros</b>
+              em <b>12x R${(produto.preco/12).toFixed(2)} sem juros</b>
             </div>
             <a href="#" className="preco-link">
               Ver os meios de pagamento
             </a>
           </div>
           <div className="info-entrega">
-            <span className="entrega-verde">Chegará grátis</span> entre 16 e
-            21/jul
+            <span className="entrega-verde">Chegará grátis</span> entre {dia7.toLocaleDateString("pt-BR")} <br />
+             e {dia14.toLocaleDateString("pt-BR")}
             <br />
             <a href="#" className="entrega-link">
               Mais formas de entrega
             </a>
           </div>
-          <div className="info-ultimo">Último disponível!</div>
+          <div className="info-ultimo">{disponivel}</div>
           <button className="btn-comprar">Comprar agora</button>
           <button className="btn-carrinho">Adicionar ao carrinho</button>
         </div>
