@@ -14,7 +14,7 @@ def init_routes(app):
                 return jsonify({"status": "Sucesso", "data": []})
             result = db.session.execute(
                 text("""
-                    SELECT id, nome, descricao, preco, img
+                    SELECT id, nome, descricao, preco, img, quantidade
                     FROM bomb_bd.anuncios
                     WHERE status_anuncio = 1
                     AND (
