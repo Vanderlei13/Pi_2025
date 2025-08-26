@@ -13,13 +13,13 @@ export default function Pesquisa() {
   const [resultados, setResultados] = useState([]);
   const [loading, setLoading] = useState(false);
   const [precoMin] = useState(0);
-  const [precoMax] = useState(11800);
+  const [precoMax] = useState(200800);
   const [precoFiltroMin, setPrecoFiltroMin] = useState(0);
-  const [precoFiltroMax, setPrecoFiltroMax] = useState(11800);
+  const [precoFiltroMax, setPrecoFiltroMax] = useState(200800);
 
   // Ordenação
   const [ordenarAberto, setOrdenarAberto] = useState(false);
-  const [ordenarPor, setOrdenarPor] = useState("relevantes"); // relevantes, maior, menor
+  const [ordenarPor, setOrdenarPor] = useState("relevantes");
 
   const navigate = useNavigate();
 
@@ -166,7 +166,7 @@ export default function Pesquisa() {
                       R$ {Number(item.preco).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                     </div>
                     <div className="pesquisa-card-desc">{item.descricao}</div>
-                    <button className="pesquisa-card-btn" onClick={handleVerDetalhes}>
+                    <button className="pesquisa-card-btn" onClick={() => navigate("/compra_de_item", { state: { produto: item } })}>
                       Ver detalhes
                     </button>
                   </div>
