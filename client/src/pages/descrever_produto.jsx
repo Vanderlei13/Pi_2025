@@ -4,6 +4,7 @@ import axios from "axios";
 export default function DescreverProduto() {
   const fileInputRef = useRef(null);
   const [preview, setPreview] = useState([]);
+  const [selectedFiles, setSelectedFiles] = useState([]);
   const [valor, setValor] = useState("");
   const [nome, setNome] = useState("");
   const [tipo, setTipo] = useState("");
@@ -12,32 +13,46 @@ export default function DescreverProduto() {
   const [descricao, setDescricao] = useState("");
 
   const postProduto = async () => {
+    const formData = new FormData();
+    selectedFiles.forEach(file => {
+      formData.append("imagens", file);
+    });
     console.log(nome)
     console.log(tipo)
     console.log(quantidade)
     console.log(preco)
     console.log(descricao)
+    console.log(valor)
 
     try {
-    const res = await axios.post("http://localhost:5000/add_product", {
-      nome: nome,
-      tipo: tipo,
-      quantidade: quantidade,
-      preco: preco,
-      descricao: descricao,
-      total: preco*quantidade
-    });
-    console.log(res.data);
-    alert("Anúncio adicionado com sucesso!");
-  } catch (error) {
-    if (error.response) {
-      console.error("Erro do backend:", error.response.data);
-      alert("Erro: " + JSON.stringify(error.response.data));
-    } else {
-      console.error("Erro:", error.message);
-      alert("Erro: " + error.message);
+      const res = await axios.post("http://localhost:5000/add_product", {
+        nome: nome,
+        tipo: tipo,
+        quantidade: quantidade,
+        preco: preco,
+        descricao: descricao,
+        total: preco * quantidade
+      });
+
+      const idProduto = res.data.id;
+
+      if (selectedFiles.length > 0) {
+        await axios.post(`http://localhost:5000/upload_imagens/${idProduto}`, formData, {
+          headers: { "Content-Type": "multipart/form-data" }
+        });
+      }
+
+      console.log(res.data);
+      alert("Anúncio adicionado com sucesso!");
+    } catch (error) {
+      if (error.response) {
+        console.error("Erro do backend:", error.response.data);
+        alert("Erro: " + JSON.stringify(error.response.data));
+      } else {
+        console.error("Erro:", error.message);
+        alert("Erro: " + error.message);
+      }
     }
-  }
   }
 
   const handleBoxClick = () => {
@@ -50,6 +65,7 @@ export default function DescreverProduto() {
     const files = Array.from(e.target.files);
     const previews = files.map((file) => URL.createObjectURL(file));
     setPreview(previews);
+    setSelectedFiles(files);
   };
 
   // Formata o valor para R$ x,xx
@@ -262,24 +278,24 @@ export default function DescreverProduto() {
               />
             </div>
           </form>
-            <button
-              type="submit"
-              onClick={postProduto}
-              style={{
-                width: "100%",
-                background: "#b71c1c",
-                color: "#fff",
-                border: "none",
-                borderRadius: 8,
-                padding: "12px 0",
-                fontSize: 18,
-                fontWeight: "bold",
-                cursor: "pointer",
-                marginTop: 8,
-              }}
-            >
-              Anunciar
-            </button>
+          <button
+            type="submit"
+            onClick={postProduto}
+            style={{
+              width: "100%",
+              background: "#b71c1c",
+              color: "#fff",
+              border: "none",
+              borderRadius: 8,
+              padding: "12px 0",
+              fontSize: 18,
+              fontWeight: "bold",
+              cursor: "pointer",
+              marginTop: 8,
+            }}
+          >
+            Anunciar
+          </button>
         </div>
       </div>
 

@@ -29,7 +29,7 @@ CREATE TABLE bomb_bd.anuncios (
         REFERENCES bomb_bd.usuario(id),
     status_anuncio INTEGER,
     nome VARCHAR NOT NULL,
-    img BYTEA,
+    img VARCHAR,
     tipo VARCHAR,
     descricao VARCHAR,
     quantidade INTEGER NOT NULL,

@@ -1,6 +1,9 @@
 from flask import request, jsonify
+from flask import send_from_directory
 from sqlalchemy import text
 from app import db
+import os
+from werkzeug.utils import secure_filename
 
 def init_routes(app):
     @app.route("/search_anuncios", methods=["GET"])
@@ -11,7 +14,7 @@ def init_routes(app):
                 return jsonify({"status": "Sucesso", "data": []})
             result = db.session.execute(
                 text("""
-                    SELECT id, nome, descricao, preco
+                    SELECT id, nome, descricao, preco, img
                     FROM bomb_bd.anuncios
                     WHERE status_anuncio = 1
                     AND (
@@ -55,10 +58,11 @@ def init_routes(app):
     def adicio_produto():
         data = request.json
         try:
-            db.session.execute(
+            result = db.session.execute(
                 text("""
                     INSERT INTO bomb_bd.anuncios (status_anuncio, nome, tipo, descricao, quantidade, preco, total)
                     VALUES (:status_anuncio, :nome, :tipo, :descricao, :quantidade, :preco, :total)
+                    RETURNING id
                 """),
                 {
                     "status_anuncio": 1,
@@ -70,8 +74,9 @@ def init_routes(app):
                     "total": data.get("total")
                 }
             )
+            novo_id = result.scalar()  # agora retorna o ID real
             db.session.commit()
-            return jsonify({"status": "Sucesso", "message": "Anúncio adicionado"})
+            return jsonify({"status": "Sucesso", "message": "Anúncio adicionado", "id": novo_id})
         except Exception as e:
             return jsonify({"status": "Falha", "message": "Anúncio não adicionado", "error": str(e)})
 
@@ -146,7 +151,7 @@ def init_routes(app):
         try:
             result = db.session.execute(
                 text("""
-                    SELECT id, nome, preco, tipo, descricao, quantidade, status_anuncio FROM bomb_bd.anuncios WHERE status_anuncio = 1
+                    SELECT id, nome, preco, tipo, descricao, quantidade, status_anuncio, img FROM bomb_bd.anuncios WHERE status_anuncio = 1
                     ORDER BY id ASC
                 """)
             )
@@ -155,19 +160,39 @@ def init_routes(app):
         except Exception as e:
             return jsonify({"status": "Falha", "message": "Não ta showing", "error": str(e)})
         
+    
 
+    
+    UPLOAD_FOLDER = os.path.join(os.getcwd(), "uploads")
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # cria se não existir
 
-    @app.route("/anuncios_inativos", methods=["GET"])
-    def show_anuncios_inativos():
-        try:
-            result = db.session.execute(
-                text("""
-                    SELECT id, nome, preco, tipo, descricao, quantidade FROM bomb_bd.anuncios WHERE status_anuncio = 2
-                    ORDER BY id ASC
-                """)
-            )
-            anuncios = [dict(row) for row in result.mappings()]
-            return jsonify({"status": "Sucesso", "data": anuncios})
-        except Exception as e:
-            return jsonify({"status": "Falha", "message": "Não ta showing", "error": str(e)})   
-            
+    @app.route("/upload_imagens/<int:id_produto>", methods=["POST"])
+    def upload_imagens(id_produto):
+        if "imagens" not in request.files:
+            return jsonify({"status": "Falha", "message": "Nenhum arquivo enviado"}), 400
+
+        arquivos = request.files.getlist("imagens")
+        caminhos_salvos = []
+
+        for idx, arquivo in enumerate(arquivos):
+            filename = secure_filename(arquivo.filename)
+            filename_salvo = f"{id_produto}_{filename}"
+            caminho = os.path.join(UPLOAD_FOLDER, filename_salvo)
+            arquivo.save(caminho)
+            caminhos_salvos.append(filename_salvo)
+
+            if idx == 0:
+                db.session.execute(
+                    text("UPDATE bomb_bd.anuncios SET img = :img WHERE id = :id"),
+                    {"img": filename_salvo, "id": id_produto}
+                )
+                db.session.commit()
+
+        return jsonify({"status": "Sucesso", "message": "Imagens salvas", "caminhos": caminhos_salvos})
+
+    
+
+    @app.route('/uploads/<filename>')
+    def uploaded_file(filename):
+        return send_from_directory(UPLOAD_FOLDER, filename)
+        

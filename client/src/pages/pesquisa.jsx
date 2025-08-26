@@ -85,7 +85,7 @@ export default function Pesquisa() {
               max={precoFiltroMax}
               value={precoFiltroMin}
               onChange={e => setPrecoFiltroMin(Number(e.target.value))}
-              style={{width: "70px", marginRight: "8px"}}
+              style={{ width: "70px", marginRight: "8px" }}
             />
             <span>–</span>
             <input
@@ -94,7 +94,7 @@ export default function Pesquisa() {
               max={precoMax}
               value={precoFiltroMax}
               onChange={e => setPrecoFiltroMax(Number(e.target.value))}
-              style={{width: "70px", marginLeft: "8px"}}
+              style={{ width: "70px", marginLeft: "8px" }}
             />
           </div>
           <div className="pesquisa-preco-range">
@@ -104,7 +104,7 @@ export default function Pesquisa() {
               max={precoMax}
               value={precoFiltroMax}
               onChange={e => setPrecoFiltroMax(Number(e.target.value))}
-              style={{width: "100%"}}
+              style={{ width: "100%" }}
             />
           </div>
         </div>
@@ -113,17 +113,17 @@ export default function Pesquisa() {
         </button>
       </aside>
       <main className="pesquisa-main">
-        <div className="pesquisa-ordenar" style={{position: "relative"}}>
+        <div className="pesquisa-ordenar" style={{ position: "relative" }}>
           <span
-            style={{cursor: "pointer"}}
+            style={{ cursor: "pointer" }}
             onClick={() => setOrdenarAberto(!ordenarAberto)}
           >
             <b>Ordenar por:</b>{" "}
             {ordenarPor === "relevantes"
               ? "Mais relevantes"
               : ordenarPor === "maior"
-              ? "Maior preço"
-              : "Menor preço"}{" "}
+                ? "Maior preço"
+                : "Menor preço"}{" "}
             <span>▼</span>
           </span>
           {ordenarAberto && (
@@ -153,21 +153,26 @@ export default function Pesquisa() {
           {loading ? (
             <div className="pesquisa-loading">Buscando...</div>
           ) : termo && resultadosFiltrados.length > 0 ? (
-            resultadosFiltrados.map(item => (
-              <div className="pesquisa-card" key={item.id}>
-                <div className="pesquisa-card-img">
-                  <img src="/Imagens/produto_padrao.png" alt={item.nome} />
-                </div>
-                <div className="pesquisa-card-nome">{item.nome}</div>
-                <div className="pesquisa-card-preco">
-                  R$ {Number(item.preco).toLocaleString("pt-BR", {minimumFractionDigits:2})}
-                </div>
-                <div className="pesquisa-card-desc">{item.descricao}</div>
-                <button className="pesquisa-card-btn" onClick={handleVerDetalhes}>
-                  Ver detalhes
-                </button>
-              </div>
-            ))
+            <>
+              {resultadosFiltrados.map(item => {
+                console.log(`../../server/uploads/${item.img}`); // <<< log de cada item
+                return (
+                  <div className="pesquisa-card" key={item.id}>
+                    <div className="pesquisa-card-img">
+                      <img src={`http://localhost:5000/uploads/${item.img}`} alt={item.nome} />
+                    </div>
+                    <div className="pesquisa-card-nome">{item.nome}</div>
+                    <div className="pesquisa-card-preco">
+                      R$ {Number(item.preco).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                    </div>
+                    <div className="pesquisa-card-desc">{item.descricao}</div>
+                    <button className="pesquisa-card-btn" onClick={handleVerDetalhes}>
+                      Ver detalhes
+                    </button>
+                  </div>
+                );
+              })}
+            </>
           ) : termo && resultadosFiltrados.length === 0 ? (
             <div className="pesquisa-sem-resultado">Nenhum resultado encontrado</div>
           ) : null}
