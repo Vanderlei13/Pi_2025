@@ -13,10 +13,19 @@ export default function DescreverProduto() {
   const [descricao, setDescricao] = useState("");
 
   const postProduto = async () => {
+    const id_usuario = localStorage.getItem("id_usuario");
+    if (!id_usuario) {
+      alert("Você precisa estar logado para anunciar.");
+      return;
+    }
+
     const formData = new FormData();
+    formData.append("id_usuario", id_usuario);
     selectedFiles.forEach(file => {
+      console.log(file);
       formData.append("imagens", file);
     });
+
     console.log(nome)
     console.log(tipo)
     console.log(quantidade)
@@ -26,15 +35,17 @@ export default function DescreverProduto() {
 
     try {
       const res = await axios.post("http://localhost:5000/add_product", {
-        nome: nome,
-        tipo: tipo,
-        quantidade: quantidade,
+        nome,
+        tipo,
+        quantidade,
         preco: preco,
-        descricao: descricao,
-        total: preco * quantidade
+        descricao,
+        total: preco * quantidade,
+        id_usuario
       });
 
       const idProduto = res.data.id;
+      console.lo
 
       if (selectedFiles.length > 0) {
         await axios.post(`http://localhost:5000/upload_imagens/${idProduto}`, formData, {
@@ -164,7 +175,13 @@ export default function DescreverProduto() {
             accept="image/*"
             ref={fileInputRef}
             style={{ display: "none" }}
-            onChange={handleFileChange}
+            onChange={(e) => {
+              let raw = e.target.value.replace(/\D/g, "");
+              let num = (Number(raw) / 100).toFixed(2);
+              setValor(num === "0.00" ? "" : `R$ ${num.replace(".", ",")}`);
+              setPreco(Number(num));
+            }}
+            onClick={handleFileChange}
           />
         </div>
 

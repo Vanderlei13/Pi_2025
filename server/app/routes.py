@@ -12,24 +12,39 @@ def init_routes(app):
         try:
             if not termo:
                 return jsonify({"status": "Sucesso", "data": []})
-            result = db.session.execute(
-                text("""
-                    SELECT id, nome, descricao, preco, img
-                    FROM bomb_bd.anuncios
-                    WHERE status_anuncio = 1
-                    AND (
-                        LOWER(nome) LIKE :termo OR
-                        LOWER(descricao) LIKE :termo OR
-                        LOWER(tipo) LIKE :termo
-                    )
-                    ORDER BY id ASC
-                """),
-                {"termo": f"%{termo.lower()}%"}
-            )
-            anuncios = [dict(row) for row in result.mappings()]
+
+            result = db.session.execute(text("""
+                SELECT
+                    a.id,
+                    a.nome,
+                    a.descricao,
+                    a.preco,
+                    (
+                        SELECT i.caminho
+                        FROM bomb_bd.imagens i
+                        WHERE i.id_anuncio = a.id
+                        ORDER BY i.id ASC
+                        LIMIT 1
+                    ) AS imagem_principal
+                FROM bomb_bd.anuncios a
+                WHERE a.status_anuncio = 1
+                AND (
+                    LOWER(a.nome) LIKE :termo
+                    OR LOWER(a.descricao) LIKE :termo
+                    OR LOWER(a.tipo) LIKE :termo
+                )
+                ORDER BY a.id ASC
+            """), {"termo": f"%{termo.lower()}%"}).mappings()
+
+            anuncios = [dict(row) for row in result]
             return jsonify({"status": "Sucesso", "data": anuncios})
+
         except Exception as e:
-            return jsonify({"status": "Falha", "message": "Erro na busca", "error": str(e)})
+            return jsonify({
+                "status": "Falha",
+                "message": "Erro na busca",
+                "error": str(e)
+            })
 
     @app.route("/add_usuario", methods=["POST"])
     def adicio_usuario():
@@ -60,8 +75,8 @@ def init_routes(app):
         try:
             result = db.session.execute(
                 text("""
-                    INSERT INTO bomb_bd.anuncios (status_anuncio, nome, tipo, descricao, quantidade, preco, total)
-                    VALUES (:status_anuncio, :nome, :tipo, :descricao, :quantidade, :preco, :total)
+                    INSERT INTO bomb_bd.anuncios (status_anuncio, nome, tipo, descricao, quantidade, preco, total, id_usuario)
+                    VALUES (:status_anuncio, :nome, :tipo, :descricao, :quantidade, :preco, :total, :id_usuario)
                     RETURNING id
                 """),
                 {
@@ -71,10 +86,11 @@ def init_routes(app):
                     "quantidade": data.get("quantidade"),
                     "preco": data.get("preco"),
                     "descricao": data.get("descricao"),
-                    "total": data.get("total")
+                    "total": data.get("total"),
+                    "id_usuario": data.get("id_usuario")  # <-- pega do frontend
                 }
             )
-            novo_id = result.scalar()  # agora retorna o ID real
+            novo_id = result.scalar()
             db.session.commit()
             return jsonify({"status": "Sucesso", "message": "Anúncio adicionado", "id": novo_id})
         except Exception as e:
@@ -119,7 +135,7 @@ def init_routes(app):
 
 
 
-    @app.route("/login", methods=["GET", "POST"])
+    @app.route("/login", methods=["POST"])
     def login():
         data = request.get_json()
         email = data.get("email")
@@ -135,13 +151,16 @@ def init_routes(app):
             ).fetchone()
 
             if result:
-                return jsonify({"status": "Sucesso", "message": "Logado com sucesso"})
+                return jsonify({
+                    "status": "Sucesso",
+                    "message": "Logado com sucesso",
+                    "id_usuario": result.id  # <-- devolve o ID do usuário logado
+                })
             else:
                 return jsonify({"status": "Falha", "message": "Email ou senha incorretos"}), 401
 
         except Exception as e:
             return jsonify({"status": "Falha", "message": "Erro no login", "error": str(e)}), 500
-
 
 # GET
 
@@ -151,7 +170,7 @@ def init_routes(app):
         try:
             result = db.session.execute(
                 text("""
-                    SELECT id, nome, preco, tipo, descricao, quantidade, status_anuncio, img FROM bomb_bd.anuncios WHERE status_anuncio = 1
+                    SELECT id, nome, preco, tipo, descricao, quantidade, status_anuncio FROM bomb_bd.anuncios WHERE status_anuncio = 1
                     ORDER BY id ASC
                 """)
             )
@@ -160,6 +179,20 @@ def init_routes(app):
         except Exception as e:
             return jsonify({"status": "Falha", "message": "Não ta showing", "error": str(e)})
         
+
+    @app.route("/anuncios_inativos", methods=["GET"])
+    def show_anuncios_inativos():
+        try:
+            result = db.session.execute(
+                text("""
+                    SELECT id, nome, preco, tipo, descricao, quantidade, status_anuncio FROM bomb_bd.anuncios WHERE status_anuncio = 2
+                    ORDER BY id ASC
+                """)
+            )
+            anuncios = [dict(row) for row in result.mappings()]
+            return jsonify({"status": "Sucesso", "data": anuncios})
+        except Exception as e:
+            return jsonify({"status": "Falha", "message": "Não ta showing", "error": str(e)})
     
 
     
@@ -171,28 +204,51 @@ def init_routes(app):
         if "imagens" not in request.files:
             return jsonify({"status": "Falha", "message": "Nenhum arquivo enviado"}), 400
 
+        # agora esperamos que o frontend envie também o id_usuario no form-data
+        id_usuario = request.form.get("id_usuario")
+        if not id_usuario:
+            return jsonify({"status": "Falha", "message": "id_usuario é obrigatório"}), 400
+
         arquivos = request.files.getlist("imagens")
         caminhos_salvos = []
 
-        for idx, arquivo in enumerate(arquivos):
+        for arquivo in arquivos:
             filename = secure_filename(arquivo.filename)
             filename_salvo = f"{id_produto}_{filename}"
             caminho = os.path.join(UPLOAD_FOLDER, filename_salvo)
             arquivo.save(caminho)
             caminhos_salvos.append(filename_salvo)
 
-            if idx == 0:
-                db.session.execute(
-                    text("UPDATE bomb_bd.anuncios SET img = :img WHERE id = :id"),
-                    {"img": filename_salvo, "id": id_produto}
-                )
-                db.session.commit()
+            # agora insere também o id_usuario
+            db.session.execute(
+                text("""
+                    INSERT INTO bomb_bd.imagens (id_anuncio, id_usuario, caminho) 
+                    VALUES (:id_anuncio, :id_usuario, :caminho)
+                """),
+                {"id_anuncio": id_produto, "id_usuario": id_usuario, "caminho": filename_salvo}
+            )
+
+        db.session.commit()
 
         return jsonify({"status": "Sucesso", "message": "Imagens salvas", "caminhos": caminhos_salvos})
 
-    
+    @app.route("/carregar_imagem", methods=["GET", "POST"])
+    def carregar_imagem():
+        data = request.json
+        try:
+            result = db.session.execute(
+                text("""
+                    SELECT caminho from bomb_bd.imagens WHERE id = :id_imagem
+                """),
+                {"id_imagem": data["id"]}
+            )
+            images = [dict(row) for row in result.mappings()]
+            return jsonify({"status": "Sucesso", "data": images})
+        except Exception as e:
+            return jsonify({"status": "Falha", "message": "Não ta showing", "error": str(e)})
+
+
 
     @app.route('/uploads/<filename>')
     def uploaded_file(filename):
         return send_from_directory(UPLOAD_FOLDER, filename)
-        

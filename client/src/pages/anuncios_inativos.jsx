@@ -15,7 +15,7 @@ export default function Anuncios_inativos() {
   const carregarAnuncios = () => {
     axios.get("http://localhost:5000/anuncios_inativos")
       .then((res) => {
-        const express_data = res.data["data"];
+        const express_data = res.data?.data || [];
         setAnuncios(express_data);
       })
       .catch((err) => {

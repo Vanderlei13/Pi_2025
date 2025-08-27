@@ -36,24 +36,21 @@ export default function Login() {
   }
 
   const carregarRegistro = async () => {
-    axios.get("http://localhost:5000/login")
-      .then((res) => {
-        const data = res.data["data"];
-        console.log(data["email"]);
-        console.log(data["senha"]);
-      })
-      .catch((err) => {
-        console.error("Erro na requisição:", err);
-      });
-
     try {
       const res = await axios.post("http://localhost:5000/login", {
         email: email,
         senha: senha
       });
-      console.log(res.data);
-      alert("Usuário adicionado com sucesso!");
-      navigate("/");
+
+      console.log("Resposta login:", res.data);
+
+      if (res.data.status === "Sucesso") {
+        localStorage.setItem("id_usuario", res.data.id_usuario);
+        alert("Logado com sucesso!");
+        navigate("/");
+      } else {
+        alert(res.data.message);
+      }
     } catch (error) {
       if (error.response) {
         console.error("Erro do backend:", error.response.data);
