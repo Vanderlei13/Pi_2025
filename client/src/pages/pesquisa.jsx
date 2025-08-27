@@ -12,7 +12,6 @@ export default function Pesquisa() {
   const termo = query.get("q") || "";
   const [resultados, setResultados] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [image, setImage] = useState("");
   const [precoMin] = useState(0);
   const [precoMax] = useState(200800);
   const [precoFiltroMin, setPrecoFiltroMin] = useState(0);
@@ -23,17 +22,6 @@ export default function Pesquisa() {
   const [ordenarPor, setOrdenarPor] = useState("relevantes");
 
   const navigate = useNavigate();
-
-  const carregarImagem = () => {
-    axios.get("http://localhost:5000/carregar_imagem")
-      .then((res) => {
-        const image_data = res.data["data"];
-        setImage(image_data);
-      })
-      .catch((err) => {
-        console.error("Erro na requisição das imagens:", err);
-      });
-  };
 
   useEffect(() => {
     async function buscar() {
