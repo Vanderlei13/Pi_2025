@@ -19,6 +19,7 @@ def init_routes(app):
                     a.nome,
                     a.descricao,
                     a.preco,
+                    a.quantidade,
                     (
                         SELECT i.caminho
                         FROM bomb_bd.imagens i
