@@ -147,7 +147,7 @@ def init_routes(app):
 
         try:
             result = db.session.execute(
-                text("SELECT id, email FROM bomb_bd.usuario WHERE email = :email AND senha = :senha"),
+                text("SELECT id, email, nome FROM bomb_bd.usuario WHERE email = :email AND senha = :senha"),
                 {"email": email, "senha": senha}
             ).fetchone()
 
@@ -155,13 +155,38 @@ def init_routes(app):
                 return jsonify({
                     "status": "Sucesso",
                     "message": "Logado com sucesso",
-                    "id_usuario": result.id  # <-- devolve o ID do usuário logado
+                    "id_usuario": result.id,
+                    "nome_usuario": result.nome
                 })
             else:
                 return jsonify({"status": "Falha", "message": "Email ou senha incorretos"}), 401
 
         except Exception as e:
             return jsonify({"status": "Falha", "message": "Erro no login", "error": str(e)}), 500
+
+    @app.route("/usuario/<int:id_usuario>", methods=["GET"])
+    def get_usuario(id_usuario):
+        try:
+            result = db.session.execute(
+                text("SELECT id, nome, email, telefone FROM bomb_bd.usuario WHERE id = :id_usuario"),
+                {"id_usuario": id_usuario}
+            ).fetchone()
+
+            if result:
+                return jsonify({
+                    "status": "Sucesso",
+                    "data": {
+                        "id": result.id,
+                        "nome": result.nome,
+                        "email": result.email,
+                        "telefone": result.telefone
+                    }
+                })
+            else:
+                return jsonify({"status": "Falha", "message": "Usuário não encontrado"}), 404
+
+        except Exception as e:
+            return jsonify({"status": "Falha", "message": "Erro ao buscar usuário", "error": str(e)}), 500
 
 # GET
 

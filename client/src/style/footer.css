@@ -46,6 +46,19 @@
 	font-size: 12px;
 }
 
+.usuario-nome {
+	margin: 6px 0 4px 0;
+	font-weight: 600;
+	font-size: 16px;
+	opacity: 1;
+}
+
+.usuario-status {
+	margin: 0;
+	opacity: 0.9;
+	font-size: 14px;
+}
+
 @media (max-width: 900px) {
 	.rodape-conteudo { grid-template-columns: 1fr 1fr; }
 	.logo-coluna { justify-content: start; }

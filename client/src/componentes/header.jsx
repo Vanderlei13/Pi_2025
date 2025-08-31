@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../style/header.css";
 import { FaSearch, FaShoppingCart, FaUser } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
@@ -6,7 +6,24 @@ import { Link, useNavigate } from "react-router-dom";
 // Componente Header
 const Header = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [usuarioLogado, setUsuarioLogado] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const idUsuario = localStorage.getItem("id_usuario");
+    const nomeUsuario = localStorage.getItem("nome_usuario");
+    
+    if (idUsuario && nomeUsuario) {
+      setUsuarioLogado({ id: idUsuario, nome: nomeUsuario });
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("id_usuario");
+    localStorage.removeItem("nome_usuario");
+    setUsuarioLogado(null);
+    navigate("/");
+  };
 
   // Ao enviar a busca, navega para a página de pesquisa passando o termo via query string
   function handleSearch(e) {
@@ -54,13 +71,22 @@ const Header = () => {
         </nav>
 
         <div className="user-cart">
-          {/* Link para login */}
-          <Link to="/login" className="user-info">
-            <div className="user-avatar">
-              <FaUser />
+          {/* Link para login ou nome do usuário */}
+          {usuarioLogado ? (
+            <div className="user-info" style={{ cursor: "pointer" }} onClick={handleLogout} title="Clique para fazer logout">
+              <div className="user-avatar">
+                <FaUser />
+              </div>
+              <span>{usuarioLogado.nome}</span>
             </div>
-            <span>Login</span>
-          </Link>
+          ) : (
+            <Link to="/login" className="user-info">
+              <div className="user-avatar">
+                <FaUser />
+              </div>
+              <span>Login</span>
+            </Link>
+          )}
           {/* Link para carrinho */}
           <Link to="/carrinho_de_compras" className="cart-link">
             <button className="cart-button" style={{marginLeft: "8px"}}>

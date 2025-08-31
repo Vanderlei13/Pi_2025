@@ -1,7 +1,19 @@
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import "../style/footer.css";
 
 function Footer() {
+  const [usuarioLogado, setUsuarioLogado] = useState(null);
+
+  useEffect(() => {
+    const idUsuario = localStorage.getItem("id_usuario");
+    const nomeUsuario = localStorage.getItem("nome_usuario");
+    
+    if (idUsuario && nomeUsuario) {
+      setUsuarioLogado({ id: idUsuario, nome: nomeUsuario });
+    }
+  }, []);
+
   return (
     <footer className="rodape">
       <div className="rodape-conteudo">
@@ -39,6 +51,14 @@ function Footer() {
             </a>
           </div>
         </div>
+
+        {usuarioLogado && (
+          <div className="coluna">
+            <h4 className="titulo">Usuário Logado</h4>
+            <p className="usuario-nome">Olá, {usuarioLogado.nome}!</p>
+            <p className="usuario-status">Você está logado</p>
+          </div>
+        )}
 
         <div className="coluna logo-coluna">
           <img src="/Imagens/Logo.png" alt="BombeirosPro" className="logo" />

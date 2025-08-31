@@ -46,6 +46,7 @@ export default function Login() {
 
       if (res.data.status === "Sucesso") {
         localStorage.setItem("id_usuario", res.data.id_usuario);
+        localStorage.setItem("nome_usuario", res.data.nome_usuario);
         alert("Logado com sucesso!");
         navigate("/");
       } else {
