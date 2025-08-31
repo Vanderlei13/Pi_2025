@@ -26,7 +26,6 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
   position: relative;
 }
-
 .search-input {
   flex-grow: 1;
   padding: 8px 16px;
@@ -35,8 +34,23 @@
   color: black;
 }
 
+.search-input {
+  flex: 1;
+  padding: 8px 16px;
+  border: none;
+  outline: none;
+  color: black;
+}
+
 .search-button {
-  padding: 0 16px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 50px; /* ou o tamanho que quiser */
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: none;
   border: none;
   color: #555;

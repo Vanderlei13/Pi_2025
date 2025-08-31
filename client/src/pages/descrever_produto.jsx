@@ -5,11 +5,11 @@ export default function DescreverProduto() {
   const fileInputRef = useRef(null);
   const [preview, setPreview] = useState([]);
   const [selectedFiles, setSelectedFiles] = useState([]);
-  const [valor, setValor] = useState("");
   const [nome, setNome] = useState("");
   const [tipo, setTipo] = useState("");
   const [quantidade, setQuantidade] = useState("");
-  const [preco, setPreco] = useState("");
+  const [preco, setPreco] = useState("");          // exibido formatado
+  const [precoNumber, setPrecoNumber] = useState(0); // valor numérico real
   const [descricao, setDescricao] = useState("");
 
   const postProduto = async () => {
@@ -22,49 +22,39 @@ export default function DescreverProduto() {
     const formData = new FormData();
     formData.append("id_usuario", id_usuario);
     selectedFiles.forEach(file => {
-      console.log(file);
       formData.append("imagens", file);
     });
-
-    console.log(nome)
-    console.log(tipo)
-    console.log(quantidade)
-    console.log(preco)
-    console.log(descricao)
-    console.log(valor)
 
     try {
       const res = await axios.post("http://localhost:5000/add_product", {
         nome,
         tipo,
         quantidade,
-        preco: preco,
+        preco: precoNumber, // manda só o número
         descricao,
-        total: preco * quantidade,
+        total: precoNumber * quantidade,
         id_usuario
       });
 
       const idProduto = res.data.id;
-      console.lo
 
       if (selectedFiles.length > 0) {
-        await axios.post(`http://localhost:5000/upload_imagens/${idProduto}`, formData, {
-          headers: { "Content-Type": "multipart/form-data" }
-        });
+        await axios.post(
+          `http://localhost:5000/upload_imagens/${idProduto}`,
+          formData,
+          { headers: { "Content-Type": "multipart/form-data" } }
+        );
       }
 
-      console.log(res.data);
       alert("Anúncio adicionado com sucesso!");
     } catch (error) {
       if (error.response) {
-        console.error("Erro do backend:", error.response.data);
         alert("Erro: " + JSON.stringify(error.response.data));
       } else {
-        console.error("Erro:", error.message);
         alert("Erro: " + error.message);
       }
     }
-  }
+  };
 
   const handleBoxClick = () => {
     if (fileInputRef.current) {
@@ -79,11 +69,25 @@ export default function DescreverProduto() {
     setSelectedFiles(files);
   };
 
-  // Formata o valor para R$ x,xx
-  const handleValorChange = (e) => {
-    let v = e.target.value.replace(/\D/g, "");
-    v = (Number(v) / 100).toFixed(2);
-    setValor(v === "0.00" ? "" : `R$ ${v.replace(".", ",")}`);
+  // só aceita números e formata como moeda brasileira
+  const handlePrecoChange = (e) => {
+    let raw = e.target.value.replace(/\D/g, ""); // só dígitos
+    if (!raw) {
+      setPreco("");
+      setPrecoNumber(0);
+      return;
+    }
+
+    let num = parseInt(raw) / 100; // divide por 100 p/ pegar centavos
+    setPrecoNumber(num); // valor puro numérico
+
+    // formata com milhar + vírgula decimal
+    setPreco(
+      `R$ ${num.toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`
+    );
   };
 
   return (
@@ -175,13 +179,7 @@ export default function DescreverProduto() {
             accept="image/*"
             ref={fileInputRef}
             style={{ display: "none" }}
-            onChange={(e) => {
-              let raw = e.target.value.replace(/\D/g, "");
-              let num = (Number(raw) / 100).toFixed(2);
-              setValor(num === "0.00" ? "" : `R$ ${num.replace(".", ",")}`);
-              setPreco(Number(num));
-            }}
-            onClick={handleFileChange}
+            onChange={handleFileChange}
           />
         </div>
 
@@ -261,6 +259,7 @@ export default function DescreverProduto() {
                 value={preco}
                 placeholder="R$ 0,00"
                 maxLength={15}
+                onChange={handlePrecoChange}
                 style={{
                   width: "100%",
                   padding: "12px",
@@ -269,10 +268,6 @@ export default function DescreverProduto() {
                   marginTop: 4,
                   fontSize: 16,
                   outline: "none",
-                }}
-                onChange={(e) => {
-                  handleValorChange(e);
-                  setPreco(e.target.value);
                 }}
               />
             </div>

@@ -47,7 +47,12 @@ export default function Adicionar_informacoes() {
             <input
               type="text"
               value={numero}
-              onChange={e => setNumero(e.target.value)}
+              onChange={e => {
+                // só permite números
+                const raw = e.target.value.replace(/\D/g, "");
+                setNumero(raw);
+              }}
+              maxLength={6} 
             />
           </div>
         </div>
@@ -113,7 +118,21 @@ export default function Adicionar_informacoes() {
             <input
               type="text"
               value={telefone}
-              onChange={e => setTelefone(e.target.value)}
+              onChange={e => {
+                let raw = e.target.value.replace(/\D/g, ""); 
+                if (raw.length > 11) raw = raw.slice(0, 11);  
+                
+                let formatted = raw;
+                if (raw.length > 2) {
+                  formatted = `(${raw.slice(0,2)}) ${raw.slice(2)}`;
+                }
+                if (raw.length > 7) {
+                  formatted = `(${raw.slice(0,2)}) ${raw.slice(2,7)}-${raw.slice(7)}`;
+                }
+                setTelefone(formatted);
+              }}
+              placeholder="(00) 00000-0000"
+              maxLength={15}
             />
           </div>
         </div>

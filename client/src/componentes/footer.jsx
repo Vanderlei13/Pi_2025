@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import "../style/footer.css";
 
 function Footer() {
-  const [usuarioLogado, setUsuarioLogado] = useState(null);
+  const [, setUsuarioLogado] = useState(null);
 
   useEffect(() => {
     const idUsuario = localStorage.getItem("id_usuario");
@@ -51,14 +51,6 @@ function Footer() {
             </a>
           </div>
         </div>
-
-        {usuarioLogado && (
-          <div className="coluna">
-            <h4 className="titulo">Usuário Logado</h4>
-            <p className="usuario-nome">Olá, {usuarioLogado.nome}!</p>
-            <p className="usuario-status">Você está logado</p>
-          </div>
-        )}
 
         <div className="coluna logo-coluna">
           <img src="/Imagens/Logo.png" alt="BombeirosPro" className="logo" />
