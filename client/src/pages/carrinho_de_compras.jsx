@@ -1,50 +1,100 @@
-import React, { useState } from 'react';
-import '../style/carrinho_de_compras.css';
-import { Link } from 'react-router-dom';
-
-const PRECO_ITENS = [1624, 1624, 1624];
-const PRODUTOS = [
-  {
-    nome: "Capacete profissional - Resistente a 500°C",
-    ref: "CAP-2025",
-    tipo: "ProFire"
-  },
-  {
-    nome: "Bota de couro ignífugo - Solado antiderrapante",
-    ref: "BOT-2025",
-    tipo: "FireShield"
-  },
-  {
-    nome: "Bota de couro ignífugo - Solado antiderrapante",
-    ref: "BOT-2025",
-    tipo: "FireShield"
-  }
-];
+import React, { useState, useEffect } from "react";
+import "../style/carrinho_de_compras.css";
+import { Link } from "react-router-dom";
 
 export default function Carrinho_de_compras() {
-  const [quantidades, setQuantidades] = useState([1, 1, 1]);
-  const [ativos, setAtivos] = useState([true, true, true]);
+  const [produtos, setProdutos] = useState([]); // Produtos carregados do banco de dados
+  const [quantidades, setQuantidades] = useState([]);
+  const [ativos, setAtivos] = useState([]);
 
-  const handleAdd = idx => {
-    setQuantidades(q =>
-      q.map((item, i) => (i === idx ? item + 1 : item))
-    );
+  // Função para buscar os produtos do carrinho no backend
+  const fetchCartItems = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/cart/1"); // Substitua "1" pelo ID do usuário logado
+      const data = await response.json();
+      setProdutos(data);
+      setQuantidades(data.map((item) => item.quantidade)); // Inicializa as quantidades
+      setAtivos(data.map(() => true)); // Inicializa os itens como ativos
+    } catch (error) {
+      console.error("Erro ao buscar itens do carrinho:", error);
+    }
   };
 
-  const handleRemove = idx => {
-    setQuantidades(q =>
-      q.map((item, i) => (i === idx && item > 0 ? item - 1 : item))
-    );
+  // Função para adicionar um produto ao carrinho
+  const handleAddToCart = async (produto, quantidade) => {
+    try {
+      const response = await fetch("http://localhost:5000/cart/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id_usuario: 1, // Substitua pelo ID do usuário logado
+          id_anuncio: produto.id,
+          quantidade,
+        }),
+      });
+
+      if (response.ok) {
+        fetchCartItems(); // Atualiza os itens do carrinho
+      } else {
+        const error = await response.json();
+        alert(`Erro: ${error.message}`);
+      }
+    } catch (error) {
+      console.error("Erro ao adicionar ao carrinho:", error);
+    }
   };
 
-  const handleExcluir = idx => {
-    setAtivos(a => a.map((item, i) => (i === idx ? false : item)));
-    setQuantidades(q => q.map((item, i) => (i === idx ? 0 : item)));
+  // Função para remover um produto do carrinho
+  const handleRemoveFromCart = async (produto) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/cart/remove/${produto.id}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.ok) {
+        fetchCartItems(); // Atualiza os itens do carrinho
+      } else {
+        const error = await response.json();
+        alert(`Erro: ${error.message}`);
+      }
+    } catch (error) {
+      console.error("Erro ao remover do carrinho:", error);
+    }
+  };
+
+  // Funções para manipular quantidades localmente
+  const handleAdd = (idx) => {
+    const produto = produtos[idx];
+    handleAddToCart(produto, 1);
+  };
+
+  const handleRemove = (idx) => {
+    const produto = produtos[idx];
+    if (quantidades[idx] > 1) {
+      handleAddToCart(produto, -1);
+    }
+  };
+
+  const handleExcluir = (idx) => {
+    const produto = produtos[idx];
+    handleRemoveFromCart(produto);
   };
 
   const temItens = ativos.some(Boolean);
-  const subtotal = quantidades.reduce((acc, qtd, i) => acc + (ativos[i] ? qtd * PRECO_ITENS[i] : 0), 0);
+  const subtotal = produtos.reduce(
+    (acc, produto, i) => acc + (ativos[i] ? quantidades[i] * produto.preco : 0),
+    0
+  );
   const total = subtotal;
+
+  useEffect(() => {
+    fetchCartItems(); // Carrega os itens do carrinho ao montar o componente
+  }, []);
 
   return (
     <div className="cart-bg">
@@ -52,63 +102,74 @@ export default function Carrinho_de_compras() {
       <div className="cart-main">
         {temItens && (
           <div className="cart-list">
-            {PRODUTOS.map((produto, idx) =>
-              ativos[idx] && (
-                <React.Fragment key={idx}>
-                  <div className="cart-item">
-                    <div className="cart-item-img">{/* Imagem aqui */}</div>
-                    <div className="cart-item-info">
-                      <div className="cart-item-name">{produto.nome}</div>
-                      <div className="cart-item-ref">
-                        Ref.: {produto.ref}<br />Tipo: {produto.tipo}
+            {produtos.map(
+              (produto, idx) =>
+                ativos[idx] && (
+                  <React.Fragment key={produto.id}>
+                    <div className="cart-item">
+                      <div className="cart-item-img">{/* Imagem aqui */}</div>
+                      <div className="cart-item-info">
+                        <div className="cart-item-name">{produto.nome}</div>
+                        <div className="cart-item-ref">
+                          Ref.: {produto.ref}
+                          <br />
+                          Tipo: {produto.tipo}
+                        </div>
+                        <div className="cart-item-actions">
+                          <button
+                            className="cart-btn cart-btn-remove"
+                            onClick={() => handleExcluir(idx)}
+                          >
+                            Excluir
+                          </button>
+                        </div>
                       </div>
-                      <div className="cart-item-actions">
-                        <button className="cart-btn cart-btn-remove" onClick={() => handleExcluir(idx)}>Excluir</button>
-                        <button className="cart-btn cart-btn-edit">Alterar</button>
+                      <div className="cart-item-price">
+                        <div className="cart-price-main">
+                          R$ {produto.preco.toLocaleString("pt-BR")}
+                        </div>
+                        <div className="cart-qty">
+                          <button
+                            className="cart-qty-btn"
+                            onClick={() => handleRemove(idx)}
+                          >
+                            -
+                          </button>
+                          <span className="cart-qty-num">
+                            {quantidades[idx]}
+                          </span>
+                          <button
+                            className="cart-qty-btn"
+                            onClick={() => handleAdd(idx)}
+                          >
+                            +
+                          </button>
+                        </div>
                       </div>
                     </div>
-                    <div className="cart-item-price">
-                      <div className="cart-price-main">R$ {PRECO_ITENS[idx].toLocaleString('pt-BR')}</div>
-                      <div className="cart-price-pix">ou R$ 1.542,80 no Pix</div>
-                      <div className="cart-qty">
-                        <button className="cart-qty-btn" onClick={() => handleRemove(idx)}>-</button>
-                        <span className="cart-qty-num">{quantidades[idx]}</span>
-                        <button className="cart-qty-btn" onClick={() => handleAdd(idx)}>+</button>
-                      </div>
-                    </div>
-                  </div>
-                  <hr className="cart-divider" />
-                </React.Fragment>
-              )
+                    <hr className="cart-divider" />
+                  </React.Fragment>
+                )
             )}
           </div>
         )}
         <div className="cart-summary">
           <div className="cart-summary-title">Resumo da compra</div>
           <hr className="cart-summary-divider" />
-          <div className="cart-summary-section">
-            <div className="cart-summary-label">Calcular Frete</div>
-            <div className="cart-summary-cep">
-              <span className="cart-summary-cep-icon"></span>
-              <input className="cart-summary-cep-input" placeholder="Informar um CEP" />
-              <span className="cart-summary-cep-link">Não sei meu CEP</span>
-            </div>
-          </div>
-          <div className="cart-summary-section">
-            <div className="cart-summary-label">Cupom</div>
-            <div className="cart-summary-cupom">
-              <span className="cart-summary-cupom-icon"></span>
-              <input className="cart-summary-cupom-input" placeholder="Cupom" />
-              <span className="cart-summary-cupom-link">Aplicar cupom</span>
-            </div>
-          </div>
           <div className="cart-summary-subtotal">
-            Subtotal ({quantidades.filter((_, i) => ativos[i]).reduce((a, b) => a + b, 0)} itens): R$<br />
-            <span className="cart-summary-subtotal-value">{subtotal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
+            Subtotal (
+            {quantidades.filter((_, i) => ativos[i]).reduce((a, b) => a + b, 0)}{" "}
+            itens): R$
+            <br />
+            <span className="cart-summary-subtotal-value">
+              {subtotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+            </span>
           </div>
           <div className="cart-summary-total-row">
             <span className="cart-summary-total-label">Total</span>
-            <span className="cart-summary-total-value">R$ {total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
+            <span className="cart-summary-total-value">
+              R$ {total.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+            </span>
           </div>
           <Link to="/adicionar_info">
             <button className="cart-summary-btn">Finalizar Compra</button>
