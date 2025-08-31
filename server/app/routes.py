@@ -253,3 +253,12 @@ def init_routes(app):
     @app.route('/uploads/<filename>')
     def uploaded_file(filename):
         return send_from_directory(UPLOAD_FOLDER, filename)
+
+
+    @app.route("/uploads_info", methods=["GET"])
+    def uploads_info():
+        result = db.session.execute(
+            text("SELECT id_anuncio, caminho FROM bomb_bd.imagens ORDER BY id ASC")
+        )
+        dados = [dict(row) for row in result.mappings()]
+        return jsonify(dados)
