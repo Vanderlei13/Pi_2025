@@ -70,13 +70,55 @@ export default function Carrinho_de_compras() {
   // Funções para manipular quantidades localmente
   const handleAdd = (idx) => {
     const produto = produtos[idx];
-    handleAddToCart(produto, 1);
+    try {
+      // Atualiza a quantidade localmente primeiro para feedback imediato
+      const novasQuantidades = [...quantidades];
+      novasQuantidades[idx] = novasQuantidades[idx] + 1;
+      setQuantidades(novasQuantidades);
+      
+      // Envia a atualização para o servidor
+      fetch("http://localhost:5000/cart/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id_usuario: 1, // Substitua pelo ID do usuário logado
+          id_anuncio: produto.id_anuncio,
+          quantidade: 1,
+        }),
+      });
+    } catch (error) {
+      console.error("Erro ao adicionar ao carrinho:", error);
+      alert("Erro ao adicionar produto ao carrinho. Tente novamente.");
+    }
   };
 
   const handleRemove = (idx) => {
     const produto = produtos[idx];
     if (quantidades[idx] > 1) {
-      handleAddToCart(produto, -1);
+      try {
+        // Atualiza a quantidade localmente primeiro para feedback imediato
+        const novasQuantidades = [...quantidades];
+        novasQuantidades[idx] = novasQuantidades[idx] - 1;
+        setQuantidades(novasQuantidades);
+        
+        // Envia a atualização para o servidor
+        fetch("http://localhost:5000/cart/add", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id_usuario: 1, // Substitua pelo ID do usuário logado
+            id_anuncio: produto.id_anuncio,
+            quantidade: -1,
+          }),
+        });
+      } catch (error) {
+        console.error("Erro ao remover do carrinho:", error);
+        alert("Erro ao remover produto do carrinho. Tente novamente.");
+      }
     }
   };
 

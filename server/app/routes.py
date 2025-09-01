@@ -287,3 +287,96 @@ def init_routes(app):
         )
         dados = [dict(row) for row in result.mappings()]
         return jsonify(dados)
+        
+    # Rotas para o carrinho de compras
+    @app.route("/cart/add", methods=["POST"])
+    def add_to_cart():
+        data = request.json
+        try:
+            # Verificar se o item já existe no carrinho
+            existing_item = db.session.execute(
+                text("""
+                    SELECT id, quantidade FROM bomb_bd.carrinho 
+                    WHERE id_usuario = :id_usuario AND id_anuncio = :id_anuncio
+                """),
+                {
+                    "id_usuario": data.get("id_usuario"),
+                    "id_anuncio": data.get("id_anuncio")
+                }
+            ).fetchone()
+            
+            if existing_item:
+                # Atualizar a quantidade
+                nova_quantidade = existing_item.quantidade + data.get("quantidade", 1)
+                if nova_quantidade <= 0:
+                    # Se a quantidade for zero ou negativa, remover o item
+                    db.session.execute(
+                        text("DELETE FROM bomb_bd.carrinho WHERE id = :id"),
+                        {"id": existing_item.id}
+                    )
+                else:
+                    # Atualizar a quantidade
+                    db.session.execute(
+                        text("""
+                            UPDATE bomb_bd.carrinho 
+                            SET quantidade = :quantidade 
+                            WHERE id = :id
+                        """),
+                        {
+                            "quantidade": nova_quantidade,
+                            "id": existing_item.id
+                        }
+                    )
+            else:
+                # Adicionar novo item ao carrinho
+                db.session.execute(
+                    text("""
+                        INSERT INTO bomb_bd.carrinho (id_usuario, id_anuncio, quantidade)
+                        VALUES (:id_usuario, :id_anuncio, :quantidade)
+                    """),
+                    {
+                        "id_usuario": data.get("id_usuario"),
+                        "id_anuncio": data.get("id_anuncio"),
+                        "quantidade": data.get("quantidade", 1)
+                    }
+                )
+                
+            db.session.commit()
+            return jsonify({"status": "Sucesso", "message": "Item adicionado ao carrinho"})
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"status": "Falha", "message": "Erro ao adicionar item ao carrinho", "error": str(e)}), 500
+    
+    @app.route("/cart/<int:id_usuario>", methods=["GET"])
+    def get_cart(id_usuario):
+        try:
+            result = db.session.execute(
+                text("""
+                    SELECT c.id, c.id_anuncio, c.quantidade, a.nome, a.preco, a.tipo, 
+                           (c.quantidade * a.preco) as subtotal,
+                           (SELECT i.caminho FROM bomb_bd.imagens i 
+                            WHERE i.id_anuncio = a.id ORDER BY i.id ASC LIMIT 1) as imagem
+                    FROM bomb_bd.carrinho c
+                    JOIN bomb_bd.anuncios a ON c.id_anuncio = a.id
+                    WHERE c.id_usuario = :id_usuario
+                """),
+                {"id_usuario": id_usuario}
+            ).mappings()
+            
+            cart_items = [dict(row) for row in result]
+            return jsonify(cart_items)
+        except Exception as e:
+            return jsonify({"status": "Falha", "message": "Erro ao buscar carrinho", "error": str(e)}), 500
+    
+    @app.route("/cart/remove/<int:item_id>", methods=["DELETE"])
+    def remove_from_cart(item_id):
+        try:
+            db.session.execute(
+                text("DELETE FROM bomb_bd.carrinho WHERE id = :id"),
+                {"id": item_id}
+            )
+            db.session.commit()
+            return jsonify({"status": "Sucesso", "message": "Item removido do carrinho"})
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"status": "Falha", "message": "Erro ao remover item do carrinho", "error": str(e)}), 500

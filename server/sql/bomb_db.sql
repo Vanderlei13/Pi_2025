@@ -74,3 +74,15 @@ CREATE TABLE bomb_bd.msg (
     mensagem VARCHAR NOT NULL
 );
 
+CREATE TABLE bomb_bd.carrinho (
+    id SERIAL PRIMARY KEY,
+    id_usuario INTEGER NOT NULL,
+    CONSTRAINT fk_carrinho_usuario FOREIGN KEY (id_usuario)
+        REFERENCES bomb_bd.usuario(id),
+    id_anuncio INTEGER NOT NULL,
+    CONSTRAINT fk_carrinho_anuncio FOREIGN KEY (id_anuncio)
+        REFERENCES bomb_bd.anuncios(id),
+    quantidade INTEGER NOT NULL DEFAULT 1,
+    data_adicao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+

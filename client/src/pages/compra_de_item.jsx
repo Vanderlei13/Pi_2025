@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "../style/compra_de_item.css";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function CompraDeItem() {
   const location = useLocation();
+  const navigate = useNavigate();
   const produto = location.state?.produto;
+  const [adicionandoAoCarrinho, setAdicionandoAoCarrinho] = useState(false);
 
 
   const data = new Date();
@@ -28,6 +30,7 @@ export default function CompraDeItem() {
 
   const [imgSelecionada, setImgSelecionada] = useState(0);
   const [imagens, setImagens] = useState([]);
+  const [quantidade, setQuantidade] = useState(1);
 
   async function pegarUploads() {
     try {
@@ -48,6 +51,43 @@ export default function CompraDeItem() {
   }
 
   // Nova função async que vai preencher a array imagens
+  // Função para adicionar produto ao carrinho
+  const handleAddToCart = async () => {
+    try {
+      setAdicionandoAoCarrinho(true);
+      
+      // Obter o ID do usuário do localStorage (ou usar um ID padrão para teste)
+      const id_usuario = localStorage.getItem("id_usuario") || 1;
+      
+      const response = await fetch("http://localhost:5000/cart/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id_usuario: parseInt(id_usuario),
+          id_anuncio: produto.id,
+          quantidade: quantidade // Usa a quantidade selecionada pelo usuário
+        }),
+      });
+
+      if (response.ok) {
+        // Mostrar mensagem de sucesso
+        alert("Produto adicionado ao carrinho!");
+        // Opcionalmente, redirecionar para o carrinho
+        navigate("/carrinho_de_compras");
+      } else {
+        const error = await response.json();
+        alert(`Erro: ${error.message}`);
+      }
+    } catch (error) {
+      console.error("Erro ao adicionar ao carrinho:", error);
+      alert("Erro ao adicionar produto ao carrinho. Tente novamente.");
+    } finally {
+      setAdicionandoAoCarrinho(false);
+    }
+  };
+
   useEffect(() => {
     async function carregarImagensProduto() {
       const { idAnuncio, caminho } = await pegarUploads();
@@ -112,9 +152,37 @@ export default function CompraDeItem() {
               Mais formas de entrega
             </a>
           </div>
-          <div className="info-ultimo">{disponivel}</div> 
+          <div className="info-ultimo">{disponivel}</div>
+          
+          <div className="quantidade-controle">
+            <span className="quantidade-label">Quantidade:</span>
+            <div className="cart-qty">
+              <button
+                className="cart-qty-btn"
+                onClick={() => quantidade > 1 && setQuantidade(quantidade - 1)}
+                disabled={quantidade <= 1}
+              >
+                -
+              </button>
+              <span className="cart-qty-num">{quantidade}</span>
+              <button
+                className="cart-qty-btn"
+                onClick={() => quantidade < produto.quantidade && setQuantidade(quantidade + 1)}
+                disabled={quantidade >= produto.quantidade}
+              >
+                +
+              </button>
+            </div>
+          </div>
+          
           <button className="btn-comprar">Comprar agora</button>
-          <button className="btn-carrinho">Adicionar ao carrinho</button>
+          <button 
+            className="btn-carrinho" 
+            onClick={handleAddToCart} 
+            disabled={adicionandoAoCarrinho}
+          >
+            {adicionandoAoCarrinho ? "Adicionando..." : "Adicionar ao carrinho"}
+          </button>
         </div>
       </div>
     </div>
