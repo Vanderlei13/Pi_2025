@@ -6,6 +6,61 @@ import os
 from werkzeug.utils import secure_filename
 
 def init_routes(app):
+    # Veículos em destaque
+    @app.route("/veiculos_destaque", methods=["GET"])
+    def veiculos_destaque():
+        try:
+            result = db.session.execute(
+                text(
+                    """
+                    SELECT id, nome, imagem
+                    FROM bomb_bd.veiculos_destaque
+                    ORDER BY id ASC
+                    """
+                )
+            ).mappings()
+            veiculos = [dict(row) for row in result]
+            return jsonify({"status": "Sucesso", "data": veiculos})
+        except Exception as e:
+            return jsonify({"status": "Falha", "message": "Erro ao buscar veículos", "error": str(e)}), 500
+
+    @app.route("/seed_veiculos", methods=["POST"])
+    def seed_veiculos():
+        try:
+            # cria tabela se não existir
+            db.session.execute(
+                text(
+                    """
+                    CREATE TABLE IF NOT EXISTS bomb_bd.veiculos_destaque (
+                        id SERIAL PRIMARY KEY,
+                        nome VARCHAR(255) NOT NULL,
+                        imagem VARCHAR(255) NOT NULL
+                    )
+                    """
+                )
+            )
+
+            # checa se já tem dados
+            count = db.session.execute(text("SELECT COUNT(1) AS c FROM bomb_bd.veiculos_destaque")).scalar()
+            if not count or count == 0:
+                db.session.execute(
+                    text(
+                        """
+                        INSERT INTO bomb_bd.veiculos_destaque (nome, imagem) VALUES
+                        ('Caminhão ABT', '/Imagens/caminhao01.webp'),
+                        ('Caminhão ABTR', '/Imagens/caminhao02.webp'),
+                        ('Caminhão ABPE', '/Imagens/caminhao03.webp'),
+                        ('Caminhão AHQ', '/Imagens/caminhao04.webp'),
+                        ('Caminhão AT', '/Imagens/caminhao05.webp')
+                        """
+                    )
+                )
+            db.session.commit()
+            return jsonify({"status": "Sucesso", "message": "Veículos populados"})
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"status": "Falha", "message": "Erro ao popular veículos", "error": str(e)}), 500
+
     @app.route("/search_anuncios", methods=["GET"])
     def search_anuncios():
         termo = request.args.get("q", "").strip()
@@ -287,6 +342,65 @@ def init_routes(app):
         )
         dados = [dict(row) for row in result.mappings()]
         return jsonify(dados)
+
+    # Caminhões como anúncios reais
+    @app.route("/caminhoes_anuncios", methods=["GET"])  # id_usuario opcional via query
+    def caminhoes_anuncios():
+        try:
+            id_usuario = request.args.get("id_usuario", type=int) or 1
+            precos = {
+                "Caminhão ABT": 950000.00,
+                "Caminhão ABTR": 1120000.00,
+                "Caminhão ABPE": 1285000.00,
+                "Caminhão AHQ": 1420000.00,
+                "Caminhão AT": 990000.00,
+            }
+
+            # Garante existência dos anúncios (por nome único)
+            for nome, preco in precos.items():
+                existente = db.session.execute(
+                    text("SELECT id FROM bomb_bd.anuncios WHERE nome = :nome"),
+                    {"nome": nome},
+                ).fetchone()
+                if not existente:
+                    db.session.execute(
+                        text(
+                            """
+                            INSERT INTO bomb_bd.anuncios (status_anuncio, nome, tipo, descricao, quantidade, preco, total, id_usuario)
+                            VALUES (1, :nome, 'Veiculo', :descricao, 1, :preco, :total, :id_usuario)
+                            """
+                        ),
+                        {
+                            "nome": nome,
+                            "descricao": f"{nome} disponível para pronta entrega. Consulte condições.",
+                            "preco": preco,
+                            "total": preco,
+                            "id_usuario": id_usuario,
+                        },
+                    )
+            db.session.commit()
+
+            # Retorna IDs criados/existentes na mesma ordem
+            result = db.session.execute(
+                text(
+                    """
+                    SELECT id, nome, preco FROM bomb_bd.anuncios
+                    WHERE nome IN ('Caminhão ABT','Caminhão ABTR','Caminhão ABPE','Caminhão AHQ','Caminhão AT')
+                    ORDER BY CASE nome
+                        WHEN 'Caminhão ABT' THEN 1
+                        WHEN 'Caminhão ABTR' THEN 2
+                        WHEN 'Caminhão ABPE' THEN 3
+                        WHEN 'Caminhão AHQ' THEN 4
+                        WHEN 'Caminhão AT' THEN 5
+                    END
+                    """
+                )
+            ).mappings()
+            dados = [dict(row) for row in result]
+            return jsonify({"status": "Sucesso", "data": dados})
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"status": "Falha", "message": "Erro ao garantir anúncios dos caminhões", "error": str(e)}), 500
         
     # Rotas para o carrinho de compras
     @app.route("/cart/add", methods=["POST"])

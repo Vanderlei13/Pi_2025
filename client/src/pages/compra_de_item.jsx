@@ -60,6 +60,17 @@ export default function CompraDeItem() {
       // Obter o ID do usuário do localStorage (ou usar um ID padrão para teste)
       const id_usuario = localStorage.getItem("id_usuario") || 1;
       
+      // Se for veículo (sem anúncio real no BD), apenas alerta e não envia
+      if (produto?.isVeiculo) {
+        alert("Veículos não podem ser adicionados ao carrinho. Entre em contato para cotação.");
+        return;
+      }
+
+      if (!Number.isInteger(produto.id) || produto.id <= 0) {
+        alert("Produto inválido. Atualize a página inicial e tente novamente.");
+        return;
+      }
+
       const response = await fetch("http://localhost:5000/cart/add", {
         method: "POST",
         headers: {
@@ -97,6 +108,12 @@ export default function CompraDeItem() {
       // Obter o ID do usuário do localStorage (ou usar um ID padrão para teste)
       const id_usuario = localStorage.getItem("id_usuario") || 1;
       
+      // Se for veículo, vai direto para adicionar informações (sem adicionar ao carrinho)
+      if (produto?.isVeiculo) {
+        navigate("/adicionar_info");
+        return;
+      }
+
       const response = await fetch("http://localhost:5000/cart/add", {
         method: "POST",
         headers: {
@@ -126,18 +143,37 @@ export default function CompraDeItem() {
 
   useEffect(() => {
     async function carregarImagensProduto() {
-      if (!produto || !produto.id) return;
-      
+      if (!produto) return;
+
+      // Se vier uma galeria em produto (ex.: veículos), prioriza
+      if (Array.isArray(produto.imagens) && produto.imagens.length > 0) {
+        setImagens(produto.imagens);
+        return;
+      }
+
+      // Se vier imagem única no produto (ex.: veículos), usa como fallback principal
+      const imagensIniciais = produto.imagem ? [produto.imagem] : [];
+
+      if (!produto.id) {
+        setImagens(imagensIniciais);
+        return;
+      }
+
       const { idAnuncio, caminho } = await pegarUploads();
       let listaImagens = [];
 
       for (let i = 0; i < idAnuncio.length; i++) {
-        if (produto.id === idAnuncio[i]) { //verifica se a img pertence a esse produto
-          listaImagens.push(`http://localhost:5000/uploads/${caminho[i]}`); //pega o caminho das img 
+        if (produto.id === idAnuncio[i]) {
+          listaImagens.push(`http://localhost:5000/uploads/${caminho[i]}`);
         }
       }
 
-      setImagens(listaImagens); // atualiza o state com as imagens do produto
+      // Se não houver uploads, mas existir imagem do produto, usa ela
+      if (listaImagens.length === 0 && imagensIniciais.length > 0) {
+        setImagens(imagensIniciais);
+      } else {
+        setImagens(listaImagens);
+      }
     }
 
     carregarImagensProduto();
@@ -222,9 +258,11 @@ export default function CompraDeItem() {
           </div>
           <h1 className="info-title">{produto.nome}</h1>
           <div className="info-preco">
-            <span className="preco-grande">R${produto.preco}</span>
+            <span className="preco-grande">
+              R$ {Number(produto.preco).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            </span>
             <div className="preco-parcela">
-              em <b>12x R${(produto.preco / 12).toFixed(2)} sem juros</b>
+              em <b>12x R$ {Number(produto.preco / 12).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} sem juros</b>
             </div>
             <a href="#" className="preco-link">
               Ver os meios de pagamento
@@ -251,13 +289,19 @@ export default function CompraDeItem() {
                 -
               </button>
               <span className="cart-qty-num">{quantidade}</span>
-              <button
-                className="cart-qty-btn"
-                onClick={() => quantidade < produto.quantidade && setQuantidade(quantidade + 1)}
-                disabled={quantidade >= produto.quantidade}
-              >
-                +
-              </button>
+              {(() => {
+                const maxQuantidade = (Number(produto?.quantidade) > 0) ? Number(produto.quantidade) : 10;
+                const podeAumentar = quantidade < maxQuantidade;
+                return (
+                  <button
+                    className="cart-qty-btn"
+                    onClick={() => podeAumentar && setQuantidade(quantidade + 1)}
+                    disabled={!podeAumentar}
+                  >
+                    +
+                  </button>
+                );
+              })()}
             </div>
           </div>
           

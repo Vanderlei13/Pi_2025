@@ -46,10 +46,13 @@ function LinhaCards({ titulo, itens }) {
 					{itens.map((p) => (
 						<article className="produto-card" key={p.id}>
 							<div className="card-top">
-								<img src={p.imagem} alt={p.nome} loading="lazy" />
+								<img src={p.imagem} alt={`Imagem do produto ${p.nome}`} loading="lazy" />
 							</div>
 							<div className="card-bottom">
 								<strong className="nome">{p.nome}</strong>
+								{p.preco !== undefined && (
+									<span className="preco">R$ {Number(p.preco).toFixed(2)}</span>
+								)}
 								<button 
 									className="btn-detalhes" 
 									type="button"

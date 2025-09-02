@@ -138,6 +138,20 @@ export default function Carrinho_de_compras() {
     fetchCartItems(); // Carrega os itens do carrinho ao montar o componente
   }, []);
 
+  const getImagemUrl = (produto) => {
+    if (produto.imagem) {
+      return `http://localhost:5000/uploads/${produto.imagem}`;
+    }
+    const fallbackPorNome = {
+      "Caminhão ABT": "/Imagens/caminhao01.webp",
+      "Caminhão ABTR": "/Imagens/caminhao02.webp",
+      "Caminhão ABPE": "/Imagens/caminhao03.webp",
+      "Caminhão AHQ": "/Imagens/caminhao04.webp",
+      "Caminhão AT": "/Imagens/caminhao05.webp",
+    };
+    return fallbackPorNome[produto.nome] || null;
+  };
+
   return (
     <div className="cart-bg">
       <h1 className="cart-title">Carrinho de compras</h1>
@@ -150,19 +164,19 @@ export default function Carrinho_de_compras() {
                   <React.Fragment key={produto.id}>
                     <div className="cart-item">
                       <div className="cart-item-img">
-                        {produto.imagem ? (
-                          <img 
-                            src={`http://localhost:5000/uploads/${produto.imagem}`} 
+                        {getImagemUrl(produto) ? (
+                          <img
+                            src={getImagemUrl(produto)}
                             alt={produto.nome}
                             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                           />
                         ) : (
-                          <div style={{ 
-                            width: '100%', 
-                            height: '100%', 
-                            backgroundColor: '#f0f0f0', 
-                            display: 'flex', 
-                            alignItems: 'center', 
+                          <div style={{
+                            width: '100%',
+                            height: '100%',
+                            backgroundColor: '#f0f0f0',
+                            display: 'flex',
+                            alignItems: 'center',
                             justifyContent: 'center',
                             color: '#666'
                           }}>
