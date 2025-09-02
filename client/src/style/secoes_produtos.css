@@ -20,6 +20,9 @@
 	border-radius: 12px;
 	padding: 16px 12px;
 	box-shadow: 0 2px 10px rgba(0,0,0,.06);
+	width: fit-content;
+	max-width: 100%;
+	margin: 0 auto;
 }
 
 .cards-row {
@@ -29,6 +32,8 @@
 	scroll-behavior: smooth;
 	scroll-snap-type: x proximity;
 	padding: 6px 28px;
+	width: fit-content;
+	max-width: 100%;
 }
 
 .cards-row::-webkit-scrollbar { height: 8px; }
@@ -55,8 +60,8 @@
 .chevron { font-size: 28px; color: #b71c1c; line-height: 1; }
 
 .produto-card {
-	min-width: 210px;
-	max-width: 210px;
+	min-width: 250px;
+	max-width: 250px;
 	border-radius: 22px;
 	background: linear-gradient(180deg, #9d1111 0%, #580b0b 100%);
 	color: #fff;
@@ -66,29 +71,69 @@
 }
 
 .card-top {
-	height: 160px;
+	height: 190px;
 	display: grid;
 	place-items: center;
 	background: radial-gradient(90% 70% at 50% 30%, #c91d1d 0%, #7a1212 100%);
 }
 .card-top img { max-width: 85%; max-height: 85%; object-fit: contain; }
 
-.card-bottom { padding: 14px 12px 16px; background: linear-gradient(180deg, rgba(0,0,0,.35) 0%, rgba(0,0,0,.65) 100%); }
+.card-bottom { padding: 16px 14px 18px; background: linear-gradient(180deg, rgba(0,0,0,.35) 0%, rgba(0,0,0,.65) 100%); }
 .nome { display: block; margin-bottom: 8px; }
 
 .btn-detalhes {
 	display: inline-block;
-	padding: 8px 14px;
+	padding: 10px 16px;
 	background: #fff;
 	color: #b71c1c;
 	border: none;
 	border-radius: 999px;
 	font-weight: 700;
 	cursor: pointer;
+	font-size: 14px;
 }
 .btn-detalhes:hover { background: #ffe9e9; }
+
+@media (max-width: 1024px) {
+	.produto-card { min-width: 220px; max-width: 220px; }
+	.card-top { height: 180px; }
+	.cards-row { padding: 6px 24px; }
+	.scroll-arrow { height: 36px; width: 36px; }
+	.chevron { font-size: 24px; }
+}
+
+@media (max-width: 768px) {
+	.home-section { padding: 12px 0; }
+	.section-title { padding: 8px 12px; font-size: 16px; }
+	.row-wrapper { padding: 12px 8px; }
+	.produto-card { min-width: 200px; max-width: 200px; }
+	.card-top { height: 160px; }
+	.cards-row { padding: 6px 20px; gap: 12px; }
+	.scroll-arrow { height: 32px; width: 32px; }
+	.chevron { font-size: 20px; }
+	.btn-detalhes { padding: 8px 12px; font-size: 13px; }
+}
 
 @media (max-width: 640px) {
 	.produto-card { min-width: 180px; max-width: 180px; }
 	.card-top { height: 140px; }
+	.cards-row { padding: 6px 16px; gap: 10px; }
+	.scroll-arrow { height: 28px; width: 28px; }
+	.chevron { font-size: 18px; }
+	.btn-detalhes { padding: 6px 10px; font-size: 12px; }
+	.card-bottom { padding: 12px 10px 14px; }
+}
+
+@media (max-width: 480px) {
+	.home-section { padding: 8px 0; }
+	.section-title { padding: 6px 10px; font-size: 14px; margin-bottom: 8px; }
+	.row-wrapper { padding: 8px 6px; }
+	.produto-card { min-width: 160px; max-width: 160px; }
+	.card-top { height: 120px; }
+	.cards-row { padding: 4px 12px; gap: 8px; }
+	.scroll-arrow { height: 24px; width: 24px; }
+	.chevron { font-size: 16px; }
+	.btn-detalhes { padding: 5px 8px; font-size: 11px; }
+	.card-bottom { padding: 10px 8px 12px; }
+	.nome { font-size: 13px; margin-bottom: 6px; }
 } 

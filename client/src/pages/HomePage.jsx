@@ -1,4 +1,5 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Carrossel from "../componentes/Carousel.jsx";
 import "../style/secoes_produtos.css";
 import "../style/home_page.css";
@@ -19,12 +20,18 @@ function ScrollSeta({ onClick, side = "left" }) {
 
 function LinhaCards({ titulo, itens }) {
 	const rowRef = useRef(null);
+	const navigate = useNavigate();
 
 	const scroll = (delta) => {
 		if (!rowRef.current) return;
 		const card = rowRef.current.querySelector(".produto-card");
 		const step = card ? card.offsetWidth + 16 : 320;
 		rowRef.current.scrollBy({ left: delta * step, behavior: "smooth" });
+	};
+
+	const handleVerDetalhes = (produto) => {
+		// Usar os dados completos do produto
+		navigate("/compra_de_item", { state: { produto: produto } });
 	};
 
 	return (
@@ -43,7 +50,13 @@ function LinhaCards({ titulo, itens }) {
 							</div>
 							<div className="card-bottom">
 								<strong className="nome">{p.nome}</strong>
-								<button className="btn-detalhes" type="button">Ver detalhes</button>
+								<button 
+									className="btn-detalhes" 
+									type="button"
+									onClick={() => handleVerDetalhes(p)}
+								>
+									Ver detalhes
+								</button>
 							</div>
 						</article>
 					))}
@@ -82,21 +95,75 @@ function CardPromocional({ marca, titulo, descricao, imagem, textoAlternativo, a
 }
 
 export default function HomePage() {
-	const conjuntos = [
-		{ id: 1, nome: "Conjunto 1", imagem: "/Imagens/bombeiro.png" },
-		{ id: 2, nome: "Conjunto 2", imagem: "/Imagens/jaqueta.png" },
-		{ id: 3, nome: "Conjunto 3", imagem: "/Imagens/calca.png" },
-		{ id: 4, nome: "Conjunto 4", imagem: "/Imagens/bota.png" },
-		{ id: 5, nome: "Conjunto 5", imagem: "/Imagens/cinto.png" },
-	];
+	const [conjuntos, setConjuntos] = useState([]);
+	const [equipamentos, setEquipamentos] = useState([]);
+	const [loading, setLoading] = useState(true);
 
-	const equipamentos = [
-		{ id: 101, nome: "Balaclava", imagem: "/Imagens/bombeiro.png" },
-		{ id: 102, nome: "Mangueira", imagem: "/Imagens/mangueira.png" },
-		{ id: 103, nome: "Capacete", imagem: "/Imagens/jaqueta.png" },
-		{ id: 104, nome: "Óculos", imagem: "/Imagens/oculos.png" },
-		{ id: 105, nome: "Luvas", imagem: "/Imagens/bota.png" },
-	];
+	useEffect(() => {
+		async function carregarProdutos() {
+			try {
+				const response = await fetch("http://localhost:5000/anuncios_ativos");
+				const data = await response.json();
+				
+				if (data.status === "Sucesso") {
+					const produtos = data.data;
+					
+					// Filtrar conjuntos (IDs 5-9)
+					const conjuntosData = produtos.filter(p => p.id >= 5 && p.id <= 9);
+					
+					// Filtrar equipamentos (IDs 10-14)
+					const equipamentosData = produtos.filter(p => p.id >= 10 && p.id <= 14);
+					
+					// Adicionar imagens aos produtos
+					const conjuntosComImagens = await adicionarImagens(conjuntosData);
+					const equipamentosComImagens = await adicionarImagens(equipamentosData);
+					
+					setConjuntos(conjuntosComImagens);
+					setEquipamentos(equipamentosComImagens);
+				}
+			} catch (error) {
+				console.error("Erro ao carregar produtos:", error);
+			} finally {
+				setLoading(false);
+			}
+		}
+
+		carregarProdutos();
+	}, []);
+
+	async function adicionarImagens(produtos) {
+		try {
+			const response = await fetch("http://localhost:5000/uploads_info");
+			const imagens = await response.json();
+			
+			return produtos.map(produto => {
+				const imagem = imagens.find(img => img.id_anuncio === produto.id);
+				return {
+					...produto,
+					imagem: imagem ? `http://localhost:5000/uploads/${imagem.caminho}` : "/Imagens/bombeiro.png"
+				};
+			});
+		} catch (error) {
+			console.error("Erro ao carregar imagens:", error);
+			return produtos.map(produto => ({
+				...produto,
+				imagem: "/Imagens/bombeiro.png"
+			}));
+		}
+	}
+
+	if (loading) {
+		return (
+			<>
+				<Carrossel />
+				<main>
+					<div style={{ textAlign: 'center', padding: '40px' }}>
+						<h2>Carregando produtos...</h2>
+					</div>
+				</main>
+			</>
+		);
+	}
 
 	return (
 		<>

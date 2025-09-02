@@ -1,16 +1,31 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../style/filtro_de_compras.css';
 
 const produtos = [
-  { nome: 'Óculos', preco: 'R$ 350,00', imagemClass: 'oculos' },
-  { nome: 'Mangueira', preco: 'R$ 350,00', imagemClass: 'mangueira' },
-  { nome: 'Ford Ranger', preco: 'R$ 350,00', imagemClass: 'ranger' },
-  { nome: 'Óculos', preco: 'R$ 350,00', imagemClass: 'oculos' },
-  { nome: 'Mangueira', preco: 'R$ 350,00', imagemClass: 'mangueira' },
-  { nome: 'Ford Ranger', preco: 'R$ 350,00', imagemClass: 'ranger' },
+  { id: 1, nome: 'Óculos', preco: 350.00, imagemClass: 'oculos', tipo: 'Equipamento', quantidade: 5 },
+  { id: 2, nome: 'Mangueira', preco: 350.00, imagemClass: 'mangueira', tipo: 'Equipamento', quantidade: 8 },
+  { id: 3, nome: 'Ford Ranger', preco: 350.00, imagemClass: 'ranger', tipo: 'Veículo', quantidade: 2 },
+  { id: 4, nome: 'Óculos', preco: 350.00, imagemClass: 'oculos', tipo: 'Equipamento', quantidade: 5 },
+  { id: 5, nome: 'Mangueira', preco: 350.00, imagemClass: 'mangueira', tipo: 'Equipamento', quantidade: 8 },
+  { id: 6, nome: 'Ford Ranger', preco: 350.00, imagemClass: 'ranger', tipo: 'Veículo', quantidade: 2 },
 ];
 
 function Filtro_de_compras() {
+  const navigate = useNavigate();
+
+  const handleVerDetalhes = (produto) => {
+    const produtoCompleto = {
+      id: produto.id,
+      nome: produto.nome,
+      preco: produto.preco,
+      quantidade: produto.quantidade,
+      tipo: produto.tipo,
+      descricao: `Descrição do ${produto.nome}`
+    };
+    navigate("/compra_de_item", { state: { produto: produtoCompleto } });
+  };
+
   return (
     <div className="pagina">
       <aside className="filtros">
@@ -40,8 +55,13 @@ function Filtro_de_compras() {
             <div className={`card ${produto.imagemClass}`} key={i}>
               <div className="imagem"></div>
               <h3>{produto.nome}</h3>
-              <p className="preco">{produto.preco}</p>
-              <button className="btn-detalhes">Ver detalhes</button>
+              <p className="preco">R$ {produto.preco.toFixed(2)}</p>
+              <button 
+                className="btn-detalhes"
+                onClick={() => handleVerDetalhes(produto)}
+              >
+                Ver detalhes
+              </button>
             </div>
           ))}
         </div>

@@ -149,11 +149,31 @@ export default function Carrinho_de_compras() {
                 ativos[idx] && (
                   <React.Fragment key={produto.id}>
                     <div className="cart-item">
-                      <div className="cart-item-img">{/* Imagem aqui */}</div>
+                      <div className="cart-item-img">
+                        {produto.imagem ? (
+                          <img 
+                            src={`http://localhost:5000/uploads/${produto.imagem}`} 
+                            alt={produto.nome}
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                          />
+                        ) : (
+                          <div style={{ 
+                            width: '100%', 
+                            height: '100%', 
+                            backgroundColor: '#f0f0f0', 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            justifyContent: 'center',
+                            color: '#666'
+                          }}>
+                            Sem imagem
+                          </div>
+                        )}
+                      </div>
                       <div className="cart-item-info">
                         <div className="cart-item-name">{produto.nome}</div>
                         <div className="cart-item-ref">
-                          Ref.: {produto.ref}
+                          Ref.: {produto.id}
                           <br />
                           Tipo: {produto.tipo}
                         </div>

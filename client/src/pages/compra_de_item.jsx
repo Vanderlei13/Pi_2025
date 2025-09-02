@@ -8,6 +8,7 @@ export default function CompraDeItem() {
   const navigate = useNavigate();
   const produto = location.state?.produto;
   const [adicionandoAoCarrinho, setAdicionandoAoCarrinho] = useState(false);
+  const [comprandoAgora, setComprandoAgora] = useState(false);
 
 
   const data = new Date();
@@ -74,7 +75,7 @@ export default function CompraDeItem() {
       if (response.ok) {
         // Mostrar mensagem de sucesso
         alert("Produto adicionado ao carrinho!");
-        // Opcionalmente, redirecionar para o carrinho
+        // Redirecionar para o carrinho
         navigate("/carrinho_de_compras");
       } else {
         const error = await response.json();
@@ -88,13 +89,50 @@ export default function CompraDeItem() {
     }
   };
 
+  // Função para comprar agora (adiciona ao carrinho e vai direto para finalização)
+  const handleBuyNow = async () => {
+    try {
+      setComprandoAgora(true);
+      
+      // Obter o ID do usuário do localStorage (ou usar um ID padrão para teste)
+      const id_usuario = localStorage.getItem("id_usuario") || 1;
+      
+      const response = await fetch("http://localhost:5000/cart/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id_usuario: parseInt(id_usuario),
+          id_anuncio: produto.id,
+          quantidade: quantidade
+        }),
+      });
+
+      if (response.ok) {
+        // Redirecionar direto para a página de adicionar informações
+        navigate("/adicionar_info");
+      } else {
+        const error = await response.json();
+        alert(`Erro: ${error.message}`);
+      }
+    } catch (error) {
+      console.error("Erro ao processar compra:", error);
+      alert("Erro ao processar compra. Tente novamente.");
+    } finally {
+      setComprandoAgora(false);
+    }
+  };
+
   useEffect(() => {
     async function carregarImagensProduto() {
+      if (!produto || !produto.id) return;
+      
       const { idAnuncio, caminho } = await pegarUploads();
       let listaImagens = [];
 
       for (let i = 0; i < idAnuncio.length; i++) {
-        if (produto.id === idAnuncio[i]) { //vertifica se a img pertence a esse produto
+        if (produto.id === idAnuncio[i]) { //verifica se a img pertence a esse produto
           listaImagens.push(`http://localhost:5000/uploads/${caminho[i]}`); //pega o caminho das img 
         }
       }
@@ -102,33 +140,81 @@ export default function CompraDeItem() {
       setImagens(listaImagens); // atualiza o state com as imagens do produto
     }
 
-    // useEffect para chamar a função ao montar o componente
-    
     carregarImagensProduto();
-    }, [produto]);
+  }, [produto]);
 
+
+  // Verificar se o produto existe
+  if (!produto) {
+    return (
+      <div className="compra-item-container">
+        <div style={{ 
+          padding: '20px', 
+          textAlign: 'center',
+          color: '#666'
+        }}>
+          <h2>Produto não encontrado</h2>
+          <p>O produto que você está procurando não foi encontrado.</p>
+          <button 
+            onClick={() => navigate('/')}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#007bff',
+              color: 'white',
+              border: 'none',
+              borderRadius: '5px',
+              cursor: 'pointer'
+            }}
+          >
+            Voltar à página inicial
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="compra-item-container">
       <div className="compra-item-gallery">
-        {imagens.map((img, idx) => (
-          <button
-            key={idx}
-            className={`gallery-thumb ${imgSelecionada === idx ? "active" : ""
-              }`}
-            onClick={() => setImgSelecionada(idx)}
-          >
-            <img src={img} alt={`Capacete ${idx + 1}`} />
-          </button>
-        ))}
+        {imagens.length > 0 ? (
+          imagens.map((img, idx) => (
+            <button
+              key={idx}
+              className={`gallery-thumb ${imgSelecionada === idx ? "active" : ""
+                }`}
+              onClick={() => setImgSelecionada(idx)}
+            >
+              <img src={img} alt={`Produto ${idx + 1}`} />
+            </button>
+          ))
+        ) : (
+          <div style={{ padding: '10px', color: '#666' }}>
+            Nenhuma imagem disponível
+          </div>
+        )}
       </div>
       <div className="compra-item-main">
         <div className="compra-item-img-area">
-          <img
-            src={imagens[imgSelecionada]}
-            alt="Capacete selecionado"
-            className="main-img"
-          />
+          {imagens.length > 0 ? (
+            <img
+              src={imagens[imgSelecionada]}
+              alt="Produto selecionado"
+              className="main-img"
+            />
+          ) : (
+            <div style={{ 
+              width: '100%', 
+              height: '400px', 
+              backgroundColor: '#f0f0f0', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              color: '#666',
+              fontSize: '18px'
+            }}>
+              Imagem não disponível
+            </div>
+          )}
         </div>
         <div className="compra-item-info">
           <div className="info-top">
@@ -175,7 +261,13 @@ export default function CompraDeItem() {
             </div>
           </div>
           
-          <button className="btn-comprar">Comprar agora</button>
+          <button 
+            className="btn-comprar" 
+            onClick={handleBuyNow}
+            disabled={comprandoAgora}
+          >
+            {comprandoAgora ? "Processando..." : "Comprar agora"}
+          </button>
           <button 
             className="btn-carrinho" 
             onClick={handleAddToCart} 
