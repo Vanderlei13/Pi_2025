@@ -80,15 +80,23 @@ function BannerPromocional() {
 	);
 }
 
-function CardPromocional({ marca, titulo, descricao, imagem, textoAlternativo, alinhamento = "esquerda" }) {
+function CardPromocional({ marca, titulo, descricao, imagem, textoAlternativo, alinhamento = "esquerda", produto }) {
+	const navigate = useNavigate();
 	const invertido = alinhamento === "direita";
+	
+	const handleSaibaMais = () => {
+		if (produto) {
+			navigate("/compra_de_item", { state: { produto } });
+		}
+	};
+	
 	return (
 		<article className={`promo-card${invertido ? " invertido" : ""}`}>
 			<div className="promo-content">
 				<span className="promo-brand">{marca}</span>
 				<h3 className="promo-title">{titulo}</h3>
 				<p className="promo-desc">{descricao}</p>
-				<a href="#" className="promo-link">Saiba mais <span>›</span></a>
+				<button onClick={handleSaibaMais} className="promo-link">Saiba mais <span>›</span></button>
 			</div>
 			<div className="promo-image">
 				<img src={imagem} alt={textoAlternativo} loading="lazy" />
@@ -186,6 +194,13 @@ export default function HomePage() {
 					imagem="/Imagens/mangueira.png"
 					textoAlternativo="Mangueira Plastflex"
 					alinhamento="direita"
+					produto={{
+						id: 11,
+						nome: "Mangueira Plastflex",
+						preco: 89.90,
+						quantidade: 15,
+						imagem: "/Imagens/mangueira.png"
+					}}
 				/>
 				<CardPromocional
 					marca="Casapete"
@@ -193,6 +208,13 @@ export default function HomePage() {
 					descricao={"Capacete especial de resgate"}
 					imagem="/Imagens/bombeiro.png"
 					textoAlternativo="Capacete de bombeiro"
+					produto={{
+						id: 10,
+						nome: "Capacete de Bombeiro",
+						preco: 156.80,
+						quantidade: 8,
+						imagem: "/Imagens/bombeiro.png"
+					}}
 				/>
 			</section>
 

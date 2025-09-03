@@ -24,7 +24,7 @@ body{
 }
 
 .bloco-branco {
-  background: white;
+  background: rgb(73, 37, 37);
   border-radius: 12px;
   padding: 20px;
 }
@@ -32,7 +32,7 @@ body{
 /* cards */
 .card {
   width: 260px;
-  height: 400px;
+  height: 580px;
   border-radius: 30px;
   overflow: hidden;
   background-color: #1e1e1e;
@@ -71,7 +71,7 @@ body{
 }
 
 .card h3 {
-  color: pink;
+  color: rgb(255, 255, 255);
   font-size: 20px;
   margin: 10px 0 5px;
   text-align: center;
@@ -92,7 +92,7 @@ body{
   border-radius: 40px;
   padding: 12px 0;
   width: 80%;
-  margin: 0 auto 10px;
+  margin: 0 auto 15px;
   font-size: 16px;
   cursor: pointer;
   font-weight: bold;
@@ -123,9 +123,28 @@ body{
   background: #495057;
 }
 
+.card .btn-excluir {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 40px;
+  padding: 10px 0;
+  width: 80%;
+  margin: 0 auto 20px;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: bold;
+  display: block;
+  transition: background 0.2s;
+}
+
+.card .btn-excluir:hover {
+  background: #c82333;
+}
+
 .btn-inativo {
   background-color: #6c757d !important;
-  color: white;
+  color: rgb(255, 255, 255);
   border: none;
   border-radius: 40px;
   padding: 10px 0;

@@ -27,6 +27,28 @@ export default function Anuncios_ativos() {
       await axios.post("http://localhost:5000/tornar_inativo", {
         id: id
       });
+      carregarAnuncios(); // Recarrega a lista após a operação
+    }
+    catch (error) {
+      if (error.response) {
+        console.error("Erro do backend:", error.response.data);
+        alert("Erro: " + JSON.stringify(error.response.data));
+      } else {
+        console.error("Erro:", error.message);
+        alert("Erro: " + error.message);
+      }
+    }
+  };
+
+  const excluirAnuncio = async (id) => {
+    if (!window.confirm("Tem certeza que deseja excluir este anúncio? Esta ação não pode ser desfeita.")) {
+      return;
+    }
+
+    try {
+      await axios.delete(`http://localhost:5000/anuncios/${id}`);
+      alert("Anúncio excluído com sucesso!");
+      carregarAnuncios(); // Recarrega a lista após a exclusão
     }
     catch (error) {
       if (error.response) {
@@ -66,6 +88,7 @@ export default function Anuncios_ativos() {
               <h3>{item.quantidade ? item.quantidade : 0} Unidades</h3>
               <button className="btn-detalhes" onClick={() => navigate("/ver_detalhes", { state: { produto: item } })}>Ver detalhes</button>
               <button className="btn-inativo" onClick={() => tornarInativo(item.id)}>Tornar Inativo</button>
+              <button className="btn-excluir" onClick={() => excluirAnuncio(item.id)}>Excluir</button>
             </div>
           </div>
         ))}

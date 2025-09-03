@@ -9,6 +9,11 @@ export default function CompraDeItem() {
   const produto = location.state?.produto;
   const [adicionandoAoCarrinho, setAdicionandoAoCarrinho] = useState(false);
   const [comprandoAgora, setComprandoAgora] = useState(false);
+  const [mostrarModalPagamento, setMostrarModalPagamento] = useState(false);
+  const [mostrarModalEntrega, setMostrarModalEntrega] = useState(false);
+  const [mostrarModalSelecao, setMostrarModalSelecao] = useState(false);
+  const [meioPagamentoSelecionado, setMeioPagamentoSelecionado] = useState('');
+  const [formaEnvioSelecionada, setFormaEnvioSelecionada] = useState('');
 
 
   const data = new Date();
@@ -100,19 +105,30 @@ export default function CompraDeItem() {
     }
   };
 
-  // Função para comprar agora (adiciona ao carrinho e vai direto para finalização)
-  const handleBuyNow = async () => {
+  // Função para comprar agora (abre modal de seleção)
+  const handleBuyNow = () => {
+    // Se for veículo, vai direto para adicionar informações (sem adicionar ao carrinho)
+    if (produto?.isVeiculo) {
+      navigate("/adicionar_info");
+      return;
+    }
+    
+    // Abre modal de seleção de pagamento e entrega
+    setMostrarModalSelecao(true);
+  };
+
+  // Função para processar a compra após seleção
+  const processarCompra = async () => {
+    if (!meioPagamentoSelecionado || !formaEnvioSelecionada) {
+      alert("Por favor, selecione o meio de pagamento e a forma de envio.");
+      return;
+    }
+
     try {
       setComprandoAgora(true);
       
       // Obter o ID do usuário do localStorage (ou usar um ID padrão para teste)
       const id_usuario = localStorage.getItem("id_usuario") || 1;
-      
-      // Se for veículo, vai direto para adicionar informações (sem adicionar ao carrinho)
-      if (produto?.isVeiculo) {
-        navigate("/adicionar_info");
-        return;
-      }
 
       const response = await fetch("http://localhost:5000/cart/add", {
         method: "POST",
@@ -127,7 +143,12 @@ export default function CompraDeItem() {
       });
 
       if (response.ok) {
-        // Redirecionar direto para a página de adicionar informações
+        // Salvar as seleções no localStorage para usar na página de adicionar informações
+        localStorage.setItem("meioPagamento", meioPagamentoSelecionado);
+        localStorage.setItem("formaEnvio", formaEnvioSelecionada);
+        
+        // Fechar modal e redirecionar
+        setMostrarModalSelecao(false);
         navigate("/adicionar_info");
       } else {
         const error = await response.json();
@@ -264,7 +285,7 @@ export default function CompraDeItem() {
             <div className="preco-parcela">
               em <b>12x R$ {Number(produto.preco / 12).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} sem juros</b>
             </div>
-            <a href="#" className="preco-link">
+            <a href="#" className="preco-link" onClick={(e) => { e.preventDefault(); setMostrarModalPagamento(true); }}>
               Ver os meios de pagamento
             </a>
           </div>
@@ -272,7 +293,7 @@ export default function CompraDeItem() {
             <span className="entrega-verde">Chegará grátis</span> entre {dia7.toLocaleDateString("pt-BR")} <br />
             e {dia14.toLocaleDateString("pt-BR")}
             <br />
-            <a href="#" className="entrega-link">
+            <a href="#" className="entrega-link" onClick={(e) => { e.preventDefault(); setMostrarModalEntrega(true); }}>
               Mais formas de entrega
             </a>
           </div>
@@ -321,6 +342,186 @@ export default function CompraDeItem() {
           </button>
         </div>
       </div>
+
+      {/* Modal de Seleção de Pagamento e Entrega */}
+      {mostrarModalSelecao && (
+        <div className="modal-overlay" onClick={() => setMostrarModalSelecao(false)}>
+          <div className="modal-content modal-selecao" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Finalizar Compra</h3>
+              <button className="modal-close" onClick={() => setMostrarModalSelecao(false)}>×</button>
+            </div>
+            <div className="modal-body">
+              <div className="selecao-container">
+                <div className="selecao-secao">
+                  <h4>💳 Meio de Pagamento</h4>
+                  <div className="opcoes-selecao">
+                    <label className="opcao-item">
+                      <input 
+                        type="radio" 
+                        name="pagamento" 
+                        value="cartao-credito"
+                        checked={meioPagamentoSelecionado === 'cartao-credito'}
+                        onChange={(e) => setMeioPagamentoSelecionado(e.target.value)}
+                      />
+                      <span>Cartão de Crédito (12x sem juros)</span>
+                    </label>
+                    <label className="opcao-item">
+                      <input 
+                        type="radio" 
+                        name="pagamento" 
+                        value="cartao-debito"
+                        checked={meioPagamentoSelecionado === 'cartao-debito'}
+                        onChange={(e) => setMeioPagamentoSelecionado(e.target.value)}
+                      />
+                      <span>Cartão de Débito (5% desconto)</span>
+                    </label>
+                    <label className="opcao-item">
+                      <input 
+                        type="radio" 
+                        name="pagamento" 
+                        value="pix"
+                        checked={meioPagamentoSelecionado === 'pix'}
+                        onChange={(e) => setMeioPagamentoSelecionado(e.target.value)}
+                      />
+                      <span>PIX (10% desconto)</span>
+                    </label>
+                    <label className="opcao-item">
+                      <input 
+                        type="radio" 
+                        name="pagamento" 
+                        value="boleto"
+                        checked={meioPagamentoSelecionado === 'boleto'}
+                        onChange={(e) => setMeioPagamentoSelecionado(e.target.value)}
+                      />
+                      <span>Boleto Bancário (8% desconto)</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div className="selecao-secao">
+                  <h4>🚚 Forma de Envio</h4>
+                  <div className="opcoes-selecao">
+                    <label className="opcao-item">
+                      <input 
+                        type="radio" 
+                        name="envio" 
+                        value="padrao"
+                        checked={formaEnvioSelecionada === 'padrao'}
+                        onChange={(e) => setFormaEnvioSelecionada(e.target.value)}
+                      />
+                      <span>Entrega Padrão - Grátis (7-14 dias)</span>
+                    </label>
+                    <label className="opcao-item">
+                      <input 
+                        type="radio" 
+                        name="envio" 
+                        value="expressa"
+                        checked={formaEnvioSelecionada === 'expressa'}
+                        onChange={(e) => setFormaEnvioSelecionada(e.target.value)}
+                      />
+                      <span>Entrega Expressa - R$ 15,90 (2-5 dias)</span>
+                    </label>
+                    <label className="opcao-item">
+                      <input 
+                        type="radio" 
+                        name="envio" 
+                        value="agendada"
+                        checked={formaEnvioSelecionada === 'agendada'}
+                        onChange={(e) => setFormaEnvioSelecionada(e.target.value)}
+                      />
+                      <span>Entrega Agendada - R$ 8,90</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div className="modal-actions">
+                <button 
+                  className="btn-cancelar" 
+                  onClick={() => setMostrarModalSelecao(false)}
+                >
+                  Cancelar
+                </button>
+                <button 
+                  className="btn-confirmar" 
+                  onClick={processarCompra}
+                  disabled={comprandoAgora}
+                >
+                  {comprandoAgora ? "Processando..." : "Continuar Compra"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Métodos de Pagamento */}
+      {mostrarModalPagamento && (
+        <div className="modal-overlay" onClick={() => setMostrarModalPagamento(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Métodos de Pagamento</h3>
+              <button className="modal-close" onClick={() => setMostrarModalPagamento(false)}>×</button>
+            </div>
+            <div className="modal-body">
+              <div className="pagamento-opcoes">
+                <div className="pagamento-item">
+                  <h4>💳 Cartão de Crédito</h4>
+                  <p>Visa, Mastercard, Elo, American Express</p>
+                  <p>Parcelamento em até 12x sem juros</p>
+                </div>
+                <div className="pagamento-item">
+                  <h4>🏦 Cartão de Débito</h4>
+                  <p>Visa, Mastercard, Elo</p>
+                  <p>À vista com desconto de 5%</p>
+                </div>
+                <div className="pagamento-item">
+                  <h4>💰 PIX</h4>
+                  <p>Pagamento instantâneo</p>
+                  <p>Desconto de 10% à vista</p>
+                </div>
+                <div className="pagamento-item">
+                  <h4>🏪 Boleto Bancário</h4>
+                  <p>Pagamento em até 3 dias úteis</p>
+                  <p>Desconto de 8% à vista</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Formas de Entrega */}
+      {mostrarModalEntrega && (
+        <div className="modal-overlay" onClick={() => setMostrarModalEntrega(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Formas de Entrega</h3>
+              <button className="modal-close" onClick={() => setMostrarModalEntrega(false)}>×</button>
+            </div>
+            <div className="modal-body">
+              <div className="entrega-opcoes">
+                <div className="entrega-item">
+                  <h4>🚚 Entrega Padrão</h4>
+                  <p>Frete grátis para compras acima de R$ 100</p>
+                  <p>Prazo: 7 a 14 dias úteis</p>
+                </div>
+                <div className="entrega-item">
+                  <h4>⚡ Entrega Expressa</h4>
+                  <p>Frete: R$ 15,90</p>
+                  <p>Prazo: 2 a 5 dias úteis</p>
+                </div>
+                <div className="entrega-item">
+                  <h4>📦 Entrega Agendada</h4>
+                  <p>Frete: R$ 8,90</p>
+                  <p>Agende o melhor horário para você</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

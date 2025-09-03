@@ -8,15 +8,19 @@
     padding: 20px 16px 8px;
 }
 .promo-banner {
-    background: #fff;
+    background: transparent;
     border-radius: 14px;
     overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0,0,0,.08);
+    box-shadow: none;
 }
 .promo-banner img {
     display: block;
-    width: 100%;
-    height: auto;
+    width: 80%;
+    height: 700px;
+    margin: 0 auto;
+    object-fit: cover;
+    object-position: top;
+    border-radius: 14px;
 }
 
 /* Cards Promocionais em grade (2 colunas) */
@@ -68,6 +72,11 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: inherit;
+    font-family: inherit;
 }
 .promo-link span { font-size: 18px; }
 

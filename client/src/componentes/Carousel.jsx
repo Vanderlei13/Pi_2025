@@ -15,26 +15,26 @@ const Carrossel = () => {
     },
     {
       id: 2,
-      imagem: "https://picsum.photos/1200/500?random=2",
-      textoAlternativo: "Slide 2",
+      imagem: "/Imagens/hero.jpeg",
+      textoAlternativo: "Equipamentos de qualidade",
       titulo: "Produtos de Qualidade"
     },
     {
       id: 3,
-      imagem: "https://picsum.photos/1200/500?random=3",
-      textoAlternativo: "Slide 3",
+      imagem: "/Imagens/hero2.jpg",
+      textoAlternativo: "Atendimento especializado",
       titulo: "Atendimento Excepcional"
     },
     {
       id: 4,
-      imagem: "https://picsum.photos/1200/500?random=4",
-      textoAlternativo: "Slide 4",
+      imagem: "/Imagens/hero 3.jpeg",
+      textoAlternativo: "Entrega rápida e segura",
       titulo: "Entrega Rápida"
     },
     {
       id: 5,
-      imagem: "https://picsum.photos/1200/500?random=5",
-      textoAlternativo: "Slide 5",
+      imagem: "/Imagens/hero 4.jpeg",
+      textoAlternativo: "Satisfação garantida",
       titulo: "Satisfação Garantida"
     }
   ];
