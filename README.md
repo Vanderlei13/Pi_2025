@@ -61,6 +61,7 @@ Pi_2025/
 - **React** (biblioteca para construção da interface)
 - **Vite** (ferramenta de build e desenvolvimento rápido)
 - **Node.js** (para gerenciamento de dependências via NPM)
+- **Flask** (Para conectar o frontend ao backend)
 
 
 ---
@@ -74,17 +75,22 @@ Pi_2025/
 
 
 2. **Instale as dependencias:**
+    no /client
     npm install
 
 
-3. **Instalar Tailwind CSS:**
+4. **Instalar Tailwind CSS:**
     npm install tailwindcss @tailwindcss/vite
 
 
 3. **Inicie o servidor de desenvolvimento:**
     npm run dev
 
+5. **Iniciar o servidor do banco de dados:**
+   no /server
+   py main.py 
 
-4. **Abra no navegador:**
+
+6. **Abra no navegador:**
     http://localhost:5173
    
