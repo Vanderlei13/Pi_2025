@@ -13,7 +13,7 @@ def create_app():
     os.makedirs(upload_folder, exist_ok=True)
     app.config["upload_folder"] = upload_folder
     
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@localhost:5432/bombereiros_pro'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:ifc@localhost:5432/bombereiros_pro'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     CORS(app)

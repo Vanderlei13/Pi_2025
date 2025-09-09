@@ -11,25 +11,22 @@ export default function Anuncios_ativos() {
     carregarAnuncios();
   }, []);
 
-  const carregarAnuncios = () => {
-    axios.get("http://localhost:5000/anuncios_ativos")
-      .then((res) => {
-        const express_data = res.data["data"];
-        setAnuncios(express_data);
-      })
-      .catch((err) => {
-        console.error("Erro na requisição:", err);
-      });
+  const carregarAnuncios = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/anuncios_ativos");
+      const express_data = res.data["data"];
+      const anunciosComImagens = await adicionarImagens(express_data);
+      setAnuncios(anunciosComImagens);
+    } catch (err) {
+      console.error("Erro na requisição:", err);
+    }
   };
 
   const tornarInativo = async (id) => {
     try {
-      await axios.post("http://localhost:5000/tornar_inativo", {
-        id: id
-      });
-      carregarAnuncios(); // Recarrega a lista após a operação
-    }
-    catch (error) {
+      await axios.post("http://localhost:5000/tornar_inativo", { id });
+      carregarAnuncios();
+    } catch (error) {
       if (error.response) {
         console.error("Erro do backend:", error.response.data);
         alert("Erro: " + JSON.stringify(error.response.data));
@@ -48,9 +45,8 @@ export default function Anuncios_ativos() {
     try {
       await axios.delete(`http://localhost:5000/anuncios/${id}`);
       alert("Anúncio excluído com sucesso!");
-      carregarAnuncios(); // Recarrega a lista após a exclusão
-    }
-    catch (error) {
+      carregarAnuncios();
+    } catch (error) {
       if (error.response) {
         console.error("Erro do backend:", error.response.data);
         alert("Erro: " + JSON.stringify(error.response.data));
@@ -58,6 +54,27 @@ export default function Anuncios_ativos() {
         console.error("Erro:", error.message);
         alert("Erro: " + error.message);
       }
+    }
+  };
+
+  const adicionarImagens = async (produtos) => {
+    try {
+      const response = await fetch("http://localhost:5000/uploads_info");
+      const imagens = await response.json();
+
+      return produtos.map(produto => {
+        const imagem = imagens.find(img => img.id_anuncio === produto.id);
+        return {
+          ...produto,
+          imagem: imagem ? `http://localhost:5000/uploads/${imagem.caminho}` : "/Imagens/bombeiro.png"
+        };
+      });
+    } catch (error) {
+      console.error("Erro ao carregar imagens:", error);
+      return produtos.map(produto => ({
+        ...produto,
+        imagem: "/Imagens/bombeiro.png"
+      }));
     }
   };
 
@@ -78,31 +95,45 @@ export default function Anuncios_ativos() {
     <div className="anuncios-container">
       <h2>Seus Anúncios Ativos</h2>
       <div className="anuncios-lista">
-        {anuncios.map((item, index) => (
-          <div className="bloco-branco" key={index}>
-            <div className="card">
-              <div className={`imagem ${item.classe || getClasseByTipo(item.tipo)}`}></div>
-              <h3>{item.nome ? item.nome.toString().trim() : 'Nome não disponível'}</h3>
-              <h3>R$ {item.preco ? parseFloat(item.preco).toFixed(2) : '0.00'}</h3>
-              <h3>{item.tipo ? item.tipo.toString().trim() : 'Tipo não disponível'}</h3>
-              <h3>{item.quantidade ? item.quantidade : 0} Unidades</h3>
-              <button className="btn-detalhes" onClick={() => navigate("/ver_detalhes", { state: { produto: item } })}>Ver detalhes</button>
-              <button className="btn-inativo" onClick={() => tornarInativo(item.id)}>Tornar Inativo</button>
-              <button className="btn-excluir" onClick={() => excluirAnuncio(item.id)}>Excluir</button>
+        {anuncios.map((item) => (
+          <div className="bloco-branco" key={item.id}>
+            <div className="pesquisa-card">
+              <div className={`pesquisa-card-img ${getClasseByTipo(item.tipo)}`}>
+                {item.imagem ? (
+                  <img src={item.imagem} alt={item.nome} />
+                ) : (
+                  <div className="placeholder-img">Sem imagem</div>
+                )}
+              </div>
+              <div className="pesquisa-card-nome">{item.nome}</div>
+              <div className="pesquisa-card-preco">
+                R$ {Number(item.preco).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+              </div>
+              <div>{item.id}</div>
+              <div className="pesquisa-card-desc">{item.descricao}</div>
+
+              <button className="pesquisa-card-btn" onClick={() => navigate("/compra_de_item", { state: { produto: item } })}>
+                Ver detalhes
+              </button>
+
+              <button className="btn-inativo" onClick={() => tornarInativo(item.id)}>
+                Tornar Inativo
+              </button>
+
+              <button className="btn-excluir" onClick={() => excluirAnuncio(item.id)}>
+                Excluir
+              </button>
             </div>
           </div>
         ))}
       </div>
+
       {anuncios.length > 0 && (
         <div style={{ marginTop: '30px' }}>
-          <button 
-            className="btn-inativo" 
+          <button
+            className="btn-inativo"
             onClick={irParaInativos}
-            style={{ 
-              width: '200px', 
-              margin: '0 auto', 
-              display: 'block'
-            }}
+            style={{ width: '200px', margin: '0 auto', display: 'block' }}
           >
             Ver Anúncios Inativos
           </button>

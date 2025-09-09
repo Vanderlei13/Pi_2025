@@ -41,7 +41,7 @@ body{
   justify-content: space-between;
   font-family: sans-serif;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  margin-bottom: 32px;
+  margin-bottom: 35px;
 }
 
 .card .imagem {
@@ -51,7 +51,7 @@ body{
   justify-content: center;
   align-items: center;
   border-bottom-left-radius: 60% 30%;
-  border-bottom-right-radius: 60% 30%;
+  border-bottom-right-radius: 0% 30%;
   background-position: center;
   background-repeat: no-repeat;
   background-size: contain;
@@ -108,7 +108,7 @@ body{
   background-color: #6c757d;
   color: white;
   border: none;
-  border-radius: 40px;
+  border-radius: 20px;
   padding: 10px 0;
   width: 80%;
   margin: 0 auto 15px;
@@ -146,13 +146,14 @@ body{
   background-color: #6c757d !important;
   color: rgb(255, 255, 255);
   border: none;
-  border-radius: 40px;
-  padding: 10px 0;
+  border-radius: 15px;
+  padding: 10px 10px;
   font-size: 14px;
   cursor: pointer;
   font-weight: bold;
   display: block;
   transition: background 0.2s;
+  margin-top: 10px;
 }
 
 .btn-inativo:hover {
